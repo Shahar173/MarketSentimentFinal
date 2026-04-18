@@ -11,50 +11,51 @@ namespace MarketSentimentFinal.ViewModels
 {
     public class LoginViewModel : INotifyPropertyChanged
     {
+        #region Fields
         private string _userEmail = string.Empty;
         private string _userPassword = string.Empty;
         private bool _isBusy;
+        #endregion
 
+        #region Properties
         public string UserEmail
         {
             get => _userEmail;
-            set
-            {
-                _userEmail = value;
-                OnPropertyChanged();
-            }
+            set { _userEmail = value; OnPropertyChanged(); }
         }
 
         public string UserPassword
         {
             get => _userPassword;
-            set
-            {
-                _userPassword = value;
-                OnPropertyChanged();
-            }
+            set { _userPassword = value; OnPropertyChanged(); }
         }
 
         public bool IsBusy
         {
             get => _isBusy;
-            set
-            {
-                _isBusy = value;
-                OnPropertyChanged();
-            }
+            set { _isBusy = value; OnPropertyChanged(); }
         }
+        #endregion
 
+        #region Commands
         public ICommand LoginCommand { get; }
+        public ICommand GoToSignUpCommand { get; }
+        #endregion
 
+        #region Constructor
         public LoginViewModel()
         {
             LoginCommand = new Command(OnLogin);
-        }
 
+            // Navigate to Sign Up Page
+            GoToSignUpCommand = new Command(async () =>
+                await Shell.Current.GoToAsync("SignUpPage"));
+        }
+        #endregion
+
+        #region Methods
         private async void OnLogin()
         {
-            // Validation
             if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
             {
                 await Shell.Current.DisplayAlert("Login Error", "Please enter both email and password.", "OK");
@@ -62,20 +63,17 @@ namespace MarketSentimentFinal.ViewModels
             }
 
             IsBusy = true;
-
-            // Simulated authentication delay (Firebase logic will go here later)
             await Task.Delay(1500);
-
             IsBusy = false;
 
-            // Navigation to the MainPage
-            // Note: Make sure "MainPage" is registered in your AppShell.xaml
             await Shell.Current.GoToAsync("//MainPage");
         }
+        #endregion
 
         #region INotifyPropertyChanged Implementation
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null!)
+        public event PropertyChangedEventHandler? PropertyChanged; // הוספנו סימן שאלה
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
