@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "759304677232",
+    "firebase_url": "https://fir-class-28e82-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fir-class-28e82",
+    "storage_bucket": "fir-class-28e82.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759304677232:android:60576ba9b194f3022cd1b5",
+        "android_client_info": {
+          "package_name": "com.companyname.kasatotfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgOIkrlszkwf5GQpPymAHpaeAqoP5ct9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759304677232:android:e710ef71d078db402cd1b5",
+        "android_client_info": {
+          "package_name": "com.companyname.marketsentimentfinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgOIkrlszkwf5GQpPymAHpaeAqoP5ct9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
