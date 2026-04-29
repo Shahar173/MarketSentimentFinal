@@ -1,26 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="MarketSentimentFinal.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MarketSentimentFinal"
     xmlns:views="clr-namespace:MarketSentimentFinal.Views"
-    Title="Market Sentiment Analysis">
+    xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
+    x:DataType="vm:AppShellViewModel"
+    Shell.ForegroundColor="White"
+    Shell.TabBarBackgroundColor="#0F2027"
+    Shell.TabBarTitleColor="#00B4DB"
+    Shell.TabBarUnselectedColor="#BBFFFFFF">
 
-    <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate views:LoginPage}"
-        Route="LoginPage" />
+    <TabBar>
+        <Tab Title="Dashboard" Route="MainPageTab">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe871;"
+                    Size="24" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:MainPage}" Route="MainPage" />
+        </Tab>
 
-    <ShellContent
-        Title="Sign Up"
-        ContentTemplate="{DataTemplate views:SignUpPage}"
-        FlyoutItemIsVisible="False"
-        Route="SignUpPage" />
+        <Tab Title="Account" Route="UserDetailsPageTab">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe7fd;"
+                    Size="24" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:UserDetailsPage}" Route="UserDetailsPage" />
+        </Tab>
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
-
+        <Tab
+            Title="Admin"
+            IsVisible="{Binding IsAdmin}"
+            Route="AdminPageTab">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xef7d;"
+                    Size="24" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:AdminPage}" Route="AdminPage" />
+        </Tab>
+    </TabBar>
 </Shell>

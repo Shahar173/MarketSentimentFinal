@@ -7,8 +7,13 @@ namespace MarketSentimentFinal.Services
     public interface IAppUserRepository
     {
         Task<string> CreateAsync(AppUser appUser);
-        Task UpdateAsync(AppUser appUser);
-        Task DeleteAsync(AppUser appUser);
+
+        // שיניתי ל-UpdateUser כדי שיתאים ל-ViewModel
+        Task UpdateUser(AppUser appUser);
+
+        // שיניתי ל-RemoveUser כדי שיתאים ל-ViewModel
+        Task RemoveUser(AppUser appUser);
+
         Task<AppUser> SignInAsync(string userEmail, string userPassword);
         Task<AppUser> GetUserByIdAsync(string userId);
         Task<List<AppUser>> GetAllAsync();

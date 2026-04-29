@@ -1,7 +1,7 @@
 ﻿using MarketSentimentFinal.Services;
 using MarketSentimentFinal.ViewModels;
 using MarketSentimentFinal.Views;
-using MarketSentimentFinal.Services.DBService; // וודא שזה קיים בשביל ה-Interface
+using MarketSentimentFinal.Services.DBService;
 using Microsoft.Extensions.Logging;
 
 namespace MarketSentimentFinal
@@ -20,20 +20,23 @@ namespace MarketSentimentFinal
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
 
-            // --- רישום ה-Services (התיקון הקריטי כאן) ---
-            // אנחנו רושמים את הממשק (Interface) ואז את המימוש שלו
+            // --- רישום ה-Services ---
             builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
             builder.Services.AddSingleton<IAppUserRepository, FirebaseUsersRepository>();
 
             // --- רישום ה-Views ---
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SignUpPage>();
+            builder.Services.AddTransient<UserDetailsPage>(); // הוספתי את זה
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<AppShell>();
 
             // --- רישום ה-ViewModels ---
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<SignUpViewModel>();
+            builder.Services.AddTransient<UserDetailsPageViewModel>(); // הוספתי את זה
+            builder.Services.AddSingleton<MainPageViewModel>();
+            builder.Services.AddSingleton<AppShellViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

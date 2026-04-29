@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarketSentimentFinal.Models
 {
@@ -15,6 +11,9 @@ namespace MarketSentimentFinal.Models
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
+
+        // השדה שהיה חסר וגרם לשגיאות
+        public string Mobile { get; set; } = string.Empty;
 
         // פרטי התחברות
         public string Email { get; set; } = string.Empty;

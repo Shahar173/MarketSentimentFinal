@@ -1,10 +1,15 @@
-﻿namespace MarketSentimentFinal.Views // הוספנו .Views שיתאים ל-XAML
+﻿using MarketSentimentFinal.ViewModels;
+
+namespace MarketSentimentFinal.Views
 {
     public partial class MainPage : ContentPage
     {
-        public MainPage()
+        public MainPage(MainPageViewModel vm)
         {
             InitializeComponent();
+
+            // חיבור ה-ViewModel לדף כדי שה-Binding יעבוד
+            BindingContext = vm;
         }
     }
 }
