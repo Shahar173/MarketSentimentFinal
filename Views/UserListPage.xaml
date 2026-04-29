@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MarketSentimentFinal.Views.UsersListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MarketSentimentFinal.Models"
+    xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
+    x:DataType="vm:UsersListViewModel"
+    NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="#0F2027" />
+            <GradientStop Offset="0.5" Color="#203A43" />
+            <GradientStop Offset="1.0" Color="#2C5364" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <Label
+            Grid.Row="0"
+            Margin="0,30,0,15"
+            CharacterSpacing="1"
+            FontAttributes="Bold"
+            FontSize="28"
+            HorizontalOptions="Center"
+            Text="USERS DIRECTORY"
+            TextColor="White" />
+
+        <Grid
+            Grid.Row="1"
+            Margin="20,0,20,15"
+            ColumnDefinitions="*,Auto">
+            <Border
+                BackgroundColor="#22FFFFFF"
+                Stroke="#44FFFFFF"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="1">
+                <SearchBar
+                    BackgroundColor="Transparent"
+                    Placeholder="Find user..."
+                    PlaceholderColor="#AAFFFFFF"
+                    SearchCommand="{Binding SearchCommand}"
+                    Text="{Binding SearchText}"
+                    TextColor="White" />
+            </Border>
+            <Button
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                Padding="0"
+                BackgroundColor="#00B4DB"
+                Command="{Binding ClearFilterCommand}"
+                CornerRadius="10"
+                FontFamily="MaterialIcons"
+                FontSize="22"
+                HeightRequest="50"
+                Text="&#xf0b0;"
+                TextColor="White"
+                WidthRequest="50" />
+        </Grid>
+
+        <CollectionView
+            x:Name="UsersCollection"
+            Grid.Row="2"
+            ItemsSource="{Binding AllUsers}"
+            SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    Margin="0,100"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="No users found"
+                        TextColor="#66FFFFFF" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AppUser">
+                    <Border
+                        Margin="20,6"
+                        Padding="16"
+                        BackgroundColor="#22FFFFFF"
+                        Stroke="#33FFFFFF"
+                        StrokeShape="RoundRectangle 15">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.UserDetailsPageCommand, Source={x:Reference UsersCollection}}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            RowDefinitions="Auto,Auto"
+                            RowSpacing="2">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="5">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="17"
+                                    Text="{Binding FirstName}"
+                                    TextColor="White" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="17"
+                                    Text="{Binding LastName}"
+                                    TextColor="White" />
+                            </HorizontalStackLayout>
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                FontSize="13"
+                                Text="{Binding Email}"
+                                TextColor="#4FC3F7" />
+                            <Border
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="#11000000"
+                                Stroke="#44FFFFFF"
+                                StrokeShape="RoundRectangle 8"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontSize="11"
+                                    Text="{Binding RegDate, StringFormat='{0:dd/MM/yyyy}'}"
+                                    TextColor="#BBFFFFFF" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

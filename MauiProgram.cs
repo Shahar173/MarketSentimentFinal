@@ -1,7 +1,7 @@
 ﻿using MarketSentimentFinal.Services;
+using MarketSentimentFinal.Services.DBService;
 using MarketSentimentFinal.ViewModels;
 using MarketSentimentFinal.Views;
-using MarketSentimentFinal.Services.DBService;
 using Microsoft.Extensions.Logging;
 
 namespace MarketSentimentFinal
@@ -27,14 +27,18 @@ namespace MarketSentimentFinal
             // --- רישום ה-Views ---
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SignUpPage>();
-            builder.Services.AddTransient<UserDetailsPage>(); // הוספתי את זה
+            builder.Services.AddTransient<UserDetailsPage>();
+            builder.Services.AddTransient<AdminPage>();      // הוספתי את זה
+            builder.Services.AddTransient<UsersListPage>();   // הוספתי את זה
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<AppShell>();
 
             // --- רישום ה-ViewModels ---
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<SignUpViewModel>();
-            builder.Services.AddTransient<UserDetailsPageViewModel>(); // הוספתי את זה
+            builder.Services.AddTransient<UserDetailsPageViewModel>();
+            builder.Services.AddTransient<AdminPageViewModel>();     // הוספתי את זה
+            builder.Services.AddTransient<UsersListViewModel>();     // הוספתי את זה
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<AppShellViewModel>();
 

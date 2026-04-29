@@ -1,47 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="MarketSentimentFinal.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:MarketSentimentFinal.Views"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
-    x:DataType="vm:AppShellViewModel"
-    Shell.ForegroundColor="White"
-    Shell.TabBarBackgroundColor="#0F2027"
-    Shell.TabBarTitleColor="#00B4DB"
-    Shell.TabBarUnselectedColor="#BBFFFFFF">
+    x:DataType="vm:AppShellViewModel">
 
-    <TabBar>
-        <Tab Title="Dashboard" Route="MainPageTab">
-            <Tab.Icon>
-                <FontImageSource
-                    FontFamily="MaterialIcons"
-                    Glyph="&#xe871;"
-                    Size="24" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate views:MainPage}" Route="MainPage" />
-        </Tab>
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style ApplyToDerivedTypes="True" TargetType="Shell">
+                <Setter Property="Shell.BackgroundColor" Value="#10252D" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.NavBarHasShadow" Value="True" />
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
 
-        <Tab Title="Account" Route="UserDetailsPageTab">
-            <Tab.Icon>
-                <FontImageSource
+    <Shell.TitleView>
+        <Grid Padding="0,0,15,0">
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="10"
+                VerticalOptions="Center">
+                <Button
+                    BackgroundColor="#1AFFFFFF"
+                    Command="{Binding GoToHomeCommand}"
+                    CornerRadius="12"
                     FontFamily="MaterialIcons"
-                    Glyph="&#xe7fd;"
-                    Size="24" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate views:UserDetailsPage}" Route="UserDetailsPage" />
-        </Tab>
+                    HeightRequest="46"
+                    Text="&#xe88a;"
+                    TextColor="#00B4DB"
+                    WidthRequest="46" />
+                <Button
+                    BackgroundColor="#1AFFFFFF"
+                    Command="{Binding GoToAccountCommand}"
+                    CornerRadius="12"
+                    FontFamily="MaterialIcons"
+                    HeightRequest="46"
+                    Text="&#xe7fd;"
+                    TextColor="#00B4DB"
+                    WidthRequest="46" />
+                <Button
+                    BackgroundColor="#1AFFFFFF"
+                    Command="{Binding GoToAdminCommand}"
+                    CornerRadius="12"
+                    FontFamily="MaterialIcons"
+                    HeightRequest="46"
+                    IsVisible="{Binding IsAdmin}"
+                    Text="&#xf02e;"
+                    TextColor="#4FC3F7"
+                    WidthRequest="46" />
+                <Button
+                    BackgroundColor="#1AFFFFFF"
+                    Command="{Binding LogoutCommand}"
+                    CornerRadius="12"
+                    FontFamily="MaterialIcons"
+                    HeightRequest="46"
+                    Text="&#xe9ba;"
+                    TextColor="#FF8A80"
+                    WidthRequest="46" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Shell.TitleView>
 
-        <Tab
-            Title="Admin"
-            IsVisible="{Binding IsAdmin}"
-            Route="AdminPageTab">
-            <Tab.Icon>
-                <FontImageSource
-                    FontFamily="MaterialIcons"
-                    Glyph="&#xef7d;"
-                    Size="24" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate views:AdminPage}" Route="AdminPage" />
-        </Tab>
-    </TabBar>
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:MainPage}"
+        Route="MainPage" />
+    <ShellContent
+        Title="Account"
+        ContentTemplate="{DataTemplate views:UserDetailsPage}"
+        Route="UserDetailsPage" />
+    <ShellContent
+        Title="Admin"
+        ContentTemplate="{DataTemplate views:AdminPage}"
+        Route="AdminPage" />
+    <ShellContent
+        Title="Users"
+        ContentTemplate="{DataTemplate views:UsersListPage}"
+        Route="UsersListPage" />
 </Shell>

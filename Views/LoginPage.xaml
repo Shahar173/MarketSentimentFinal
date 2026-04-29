@@ -7,10 +7,6 @@
     Title="Login"
     BackgroundColor="#121212">
 
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
-
     <ScrollView>
         <VerticalStackLayout
             Padding="30"

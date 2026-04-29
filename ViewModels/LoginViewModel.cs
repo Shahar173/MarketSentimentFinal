@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketSentimentFinal.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace MarketSentimentFinal.ViewModels
     public class LoginViewModel : INotifyPropertyChanged
     {
         #region Fields
+        private IAppUserRepository _db;
         private string _userEmail = string.Empty;
         private string _userPassword = string.Empty;
         private bool _isBusy;
@@ -43,8 +45,9 @@ namespace MarketSentimentFinal.ViewModels
         #endregion
 
         #region Constructor
-        public LoginViewModel()
+        public LoginViewModel(IAppUserRepository dbService)
         {
+            _db = dbService;
             LoginCommand = new Command(OnLogin);
 
             // Navigate to Sign Up Page
@@ -56,17 +59,31 @@ namespace MarketSentimentFinal.ViewModels
         #region Methods
         private async void OnLogin()
         {
+            IsBusy = true;
             if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
             {
                 await Shell.Current.DisplayAlert("Login Error", "Please enter both email and password.", "OK");
                 return;
             }
+            else
+            {
+                try
+                {
+                    var user = await _db.SignInAsync(UserEmail, UserPassword);
+                    IsBusy = false;
 
-            IsBusy = true;
-            await Task.Delay(1500);
-            IsBusy = false;
+                    // Navigate to Main Page
+                    (App.Current as App)!.CurrentUser = user; // Set the current user in the App class
 
-            await Shell.Current.GoToAsync("//MainPage");
+                    var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>()!; // Resolve MainPage from the service provider
+                    Application.Current!.Windows[0].Page = mainPage; // Reset the MainPage to refresh the navigation stack
+                }
+                catch (Exception ex)
+                {
+                    IsBusy = false;
+                    throw;
+                }
+            }
         }
         #endregion
 

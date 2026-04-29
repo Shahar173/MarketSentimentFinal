@@ -1,6 +1,7 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using MarketSentimentFinal.Models;
+using MarketSentimentFinal.Services; // וודא שזה מצביע למקום של ה-IAppUserRepository
 using MarketSentimentFinal.Services.DBService;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,6 @@ namespace MarketSentimentFinal.Services
 
         public async Task<string> CreateAsync(AppUser appUser)
         {
-            // שימוש ב-Email ו-Password מהמודל החדש שלך
             string userId = await _authService.CreateAuth(appUser.Email, appUser.Password);
             appUser.Id = userId;
             await _firebaseClient.Child("users").Child(userId).PutAsync(appUser);
@@ -38,19 +38,20 @@ namespace MarketSentimentFinal.Services
             return await _firebaseClient.Child("users").Child(userId).OnceSingleAsync<AppUser>();
         }
 
-        // כאן התיקון הקריטי לשגיאה CS0738
         public async Task<List<AppUser>> GetAllAsync()
         {
             var users = await _firebaseClient.Child("users").OnceAsync<AppUser>();
             return users.Select(u => u.Object).ToList();
         }
 
-        public async Task UpdateAsync(AppUser appUser)
+        // שינוי שם מתודה כדי להתאים ל-Interface ול-ViewModel
+        public async Task UpdateUser(AppUser appUser)
         {
             await _firebaseClient.Child("users").Child(appUser.Id).PutAsync(appUser);
         }
 
-        public async Task DeleteAsync(AppUser appUser)
+        // שינוי שם מתודה כדי להתאים ל-Interface ול-ViewModel
+        public async Task RemoveUser(AppUser appUser)
         {
             await _firebaseClient.Child("users").Child(appUser.Id).DeleteAsync();
         }
