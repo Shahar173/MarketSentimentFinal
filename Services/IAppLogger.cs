@@ -8,7 +8,7 @@ namespace MarketSentimentFinal.Services
 {
     public interface IAppLogger
     {
-		void LogDebug(string message);
-		void LogError(string message);
-	}
+        void LogDebug(string message);
+        void LogError(string message);
+    }
 }

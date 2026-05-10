@@ -17,10 +17,11 @@ namespace MarketSentimentFinal
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons"); 
                 });
 
             // --- רישום ה-Services ---
+            builder.Services.AddSingleton<IAppLogger, LogService>();
             builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
             builder.Services.AddSingleton<IAppUserRepository, FirebaseUsersRepository>();
 
@@ -28,8 +29,8 @@ namespace MarketSentimentFinal
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SignUpPage>();
             builder.Services.AddTransient<UserDetailsPage>();
-            builder.Services.AddTransient<AdminPage>();      // הוספתי את זה
-            builder.Services.AddTransient<UsersListPage>();   // הוספתי את זה
+            builder.Services.AddTransient<AdminPage>();
+            builder.Services.AddTransient<UsersListPage>();
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<AppShell>();
 
@@ -37,8 +38,8 @@ namespace MarketSentimentFinal
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<SignUpViewModel>();
             builder.Services.AddTransient<UserDetailsPageViewModel>();
-            builder.Services.AddTransient<AdminPageViewModel>();     // הוספתי את זה
-            builder.Services.AddTransient<UsersListViewModel>();     // הוספתי את זה
+            builder.Services.AddTransient<AdminPageViewModel>();
+            builder.Services.AddTransient<UsersListViewModel>();
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<AppShellViewModel>();
 

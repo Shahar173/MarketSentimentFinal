@@ -33,7 +33,7 @@ namespace MarketSentimentFinal.ViewModels
 
         public async Task LoadAllUsers()
         {
-            var usersFromDb = await _userRepo.GetAllAsync();
+            var usersFromDb = _userRepo.GetAllAsync();
             _allUsersList = usersFromDb;
             UpdateCollection(usersFromDb);
         }

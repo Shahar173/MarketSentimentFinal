@@ -5,11 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     Title="Create Account"
-    BackgroundColor="#121212">
-
-    <ContentPage.BindingContext>
-        <vm:SignUpViewModel />
-    </ContentPage.BindingContext>
+    x:DataType="vm:SignUpViewModel"
+    BackgroundColor="#121212"
+    NavigationPage.HasNavigationBar="False"
+    Shell.NavBarIsVisible="False">
 
     <ScrollView>
         <VerticalStackLayout
@@ -80,6 +79,21 @@
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
                 <Entry
+                    Keyboard="Telephone"
+                    Placeholder="Mobile Number"
+                    PlaceholderColor="Gray"
+                    Text="{Binding Mobile}"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <Border
+                Padding="10,0"
+                BackgroundColor="#1E1E1E"
+                HeightRequest="50"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Entry
                     IsPassword="True"
                     Placeholder="Password"
                     PlaceholderColor="Gray"
@@ -97,6 +111,12 @@
                 HeightRequest="55"
                 Text="Sign Up"
                 TextColor="White" />
+            <Label
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding SignUpMessageVisible}"
+                Text="{Binding ErrorMessage}"
+                TextColor="#FF8A80" />
 
             <Button
                 BackgroundColor="Transparent"

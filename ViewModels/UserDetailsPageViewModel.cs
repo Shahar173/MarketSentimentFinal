@@ -69,7 +69,7 @@ namespace MarketSentimentFinal.ViewModels
             _selectedUser.Mobile = Mobile ?? string.Empty;
 
             // קורא ל-UpdateUser שסידרנו ב-Interface
-            await _userRepo.UpdateUser(_selectedUser);
+            await _userRepo.UpdateAsync(_selectedUser);
 
             if (Shell.Current != null)
             {
@@ -86,7 +86,7 @@ namespace MarketSentimentFinal.ViewModels
             if (!confirmed) return;
 
             // קורא ל-RemoveUser שסידרנו ב-Interface
-            await _userRepo.RemoveUser(_selectedUser);
+            await _userRepo.DeleteAsync(_selectedUser);
             await Shell.Current.GoToAsync("//MainPage");
         }
     }

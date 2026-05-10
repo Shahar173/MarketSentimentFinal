@@ -1,11 +1,12 @@
 ﻿using System.Windows.Input;
 using MarketSentimentFinal.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace MarketSentimentFinal.ViewModels
 {
     public class AppShellViewModel : ViewModelBase
     {
-        // בדיקה האם המשתמש הוא אדמין כדי להציג כפתורי ניהול
+        // המאפיין IsAdmin מושך את הנתונים מהמשתמש הנוכחי ב-App
         public bool IsAdmin => (App.Current as App)?.CurrentUser?.IsAdmin ?? false;
 
         public ICommand GoToHomeCommand { get; }
@@ -15,23 +16,14 @@ namespace MarketSentimentFinal.ViewModels
 
         public AppShellViewModel()
         {
-            // ניווט לדף הבית
-            GoToHomeCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("//MainPage"));
+            // שימוש ב-// מבטיח ניווט אבסולוטי בתוך ה-Shell
+            GoToHomeCommand = new Command(async () => await Shell.Current.GoToAsync("//MainPage"));
+            GoToAccountCommand = new Command(async () => await Shell.Current.GoToAsync("//UserDetailsPage"));
+            GoToAdminCommand = new Command(async () => await Shell.Current.GoToAsync("//AdminPage"));
 
-            // ניווט לדף פרטי משתמש
-            GoToAccountCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("//UserDetailsPage"));
-
-            // ניווט לדף ניהול
-            GoToAdminCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("//AdminPage"));
-
-            // פקודת התנתקות
             LogoutCommand = new Command(async () => await Logout());
         }
 
-        // פונקציה לעדכון ה-UI כשהסטטוס של האדמין משתנה
         public void NotifyIsAdminChanged()
         {
             OnPropertyChanged(nameof(IsAdmin));
@@ -39,17 +31,21 @@ namespace MarketSentimentFinal.ViewModels
 
         private async Task Logout()
         {
-            // 1. איפוס המשתמש הנוכחי בזיכרון
-            if (App.Current is App app)
-            {
-                app.CurrentUser = null;
-            }
+            // 1. איפוס המשתמש
+            if (App.Current is App app) app.CurrentUser = null;
 
-            // 2. עדכון ה-UI
             NotifyIsAdminChanged();
 
-            // 3. ניווט חזרה לדף הלוגין דרך ה-Shell (הדרך הנכונה ב-MAUI)
-            await Shell.Current.GoToAsync("//LoginPage");
+            // 2. חזרה ללוגין על ידי החלפת ה-MainPage (הדרך הבטוחה ביותר אצלך)
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var loginPage = IPlatformApplication.Current?.Services.GetService<LoginPage>();
+                if (loginPage != null)
+                {
+                    // אנחנו עוטפים ב-NavigationPage כדי שהניווט ל-SignUp ימשיך לעבוד
+                    Application.Current.MainPage = new NavigationPage(loginPage);
+                }
+            });
         }
     }
 }

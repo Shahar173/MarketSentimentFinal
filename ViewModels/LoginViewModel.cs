@@ -1,99 +1,98 @@
-﻿using MarketSentimentFinal.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MarketSentimentFinal.Models;
+using MarketSentimentFinal.Services;
+using MarketSentimentFinal.Views;
 
 namespace MarketSentimentFinal.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public partial class LoginViewModel : ObservableObject
     {
-        #region Fields
-        private IAppUserRepository _db;
-        private string _userEmail = string.Empty;
-        private string _userPassword = string.Empty;
-        private bool _isBusy;
-        #endregion
+        private readonly IAppUserRepository _dbService;
 
-        #region Properties
-        public string UserEmail
-        {
-            get => _userEmail;
-            set { _userEmail = value; OnPropertyChanged(); }
-        }
+        [ObservableProperty] private bool _isBusy;
+        [ObservableProperty] private string _errorMessage;
+        [ObservableProperty] private string _userEmail;
+        [ObservableProperty] private string _userPassword;
 
-        public string UserPassword
-        {
-            get => _userPassword;
-            set { _userPassword = value; OnPropertyChanged(); }
-        }
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set { _isBusy = value; OnPropertyChanged(); }
-        }
-        #endregion
-
-        #region Commands
-        public ICommand LoginCommand { get; }
-        public ICommand GoToSignUpCommand { get; }
-        #endregion
-
-        #region Constructor
         public LoginViewModel(IAppUserRepository dbService)
         {
-            _db = dbService;
-            LoginCommand = new Command(OnLogin);
+            _dbService = dbService;
 
-            // Navigate to Sign Up Page
-            GoToSignUpCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("SignUpPage"));
+            // אתחול שדות
+            UserEmail = string.Empty;
+            UserPassword = string.Empty;
         }
-        #endregion
 
-        #region Methods
-        private async void OnLogin()
+        [RelayCommand]
+        private async Task Login()
         {
-            IsBusy = true;
             if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
             {
-                await Shell.Current.DisplayAlert("Login Error", "Please enter both email and password.", "OK");
+                await Shell.Current.DisplayAlert("Error", "Please enter credentials", "OK");
                 return;
             }
-            else
+
+            try
             {
-                try
+                IsBusy = true;
+                ErrorMessage = string.Empty;
+
+                // 1. קריאה ל-Firebase
+                AppUser user = await _dbService.SignInAsync(UserEmail, UserPassword);
+
+                if (user != null)
                 {
-                    var user = await _db.SignInAsync(UserEmail, UserPassword);
+                    // 2. שמירת המשתמש ב-App Class
+                    if (App.Current is App mainApp)
+                    {
+                        mainApp.CurrentUser = user;
+                    }
+
                     IsBusy = false;
 
-                    // Navigate to Main Page
-                    (App.Current as App)!.CurrentUser = user; // Set the current user in the App class
+                    // 3. החלפת ה-Root של האפליקציה ל-AppShell
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        // שליפת ה-AppShell מה-Services (כך הוא מקבל את ה-ViewModel שלו אוטומטית)
+                        var shell = IPlatformApplication.Current?.Services.GetService<AppShell>();
 
-                    var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>()!; // Resolve MainPage from the service provider
-                    Application.Current!.Windows[0].Page = mainPage; // Reset the MainPage to refresh the navigation stack
+                        if (shell != null)
+                        {
+                            Application.Current.MainPage = shell;
+                        }
+                    });
                 }
-                catch (Exception ex)
+                else
                 {
                     IsBusy = false;
-                    throw;
+                    await Shell.Current.DisplayAlert("Login Failed", "Invalid credentials.", "OK");
                 }
             }
+            catch (Exception ex)
+            {
+                IsBusy = false;
+                ErrorMessage = ex.Message;
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
         }
-        #endregion
 
-        #region INotifyPropertyChanged Implementation
-        public event PropertyChangedEventHandler? PropertyChanged; // הוספנו סימן שאלה
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        [RelayCommand]
+        private async Task GoToSignUp()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            try
+            {
+                // מכיוון שאנחנו בתוך NavigationPage (לפני ה-Shell), משתמשים בזה:
+                var signUpPage = IPlatformApplication.Current?.Services.GetService<SignUpPage>();
+                if (signUpPage != null)
+                {
+                    await Application.Current.MainPage.Navigation.PushAsync(signUpPage);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Navigation Error: {ex.Message}");
+            }
         }
-        #endregion
     }
 }

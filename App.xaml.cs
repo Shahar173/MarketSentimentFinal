@@ -1,27 +1,26 @@
 ﻿using MarketSentimentFinal.Models;
-using MarketSentimentFinal.Views; // וודא שיש לך תיקיית Models עם מחלקת AppUser
+using MarketSentimentFinal.Views;
 
 namespace MarketSentimentFinal
 {
     public partial class App : Application
     {
-        private Page _page;
-        // המשתנה הקריטי ששומר את נתוני המשתמש המחובר לכל אורך הריצה
-        public AppUser? CurrentUser { get; set; }
+        // המשתנה הקריטי לשמירת המשתמש
+        public AppUser? CurrentUser { get; set; } = null;
 
-        public App(LoginPage view)
+        public App()
         {
             InitializeComponent();
-
-            _page= view;
-            // הגדרת הדף הראשי של האפליקציה כ-AppShell
-            //MainPage = new AppShell();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            // החזרת החלון הראשי עם ה-AppShell שהגדרנו
-            return new Window(_page);
+            // אנחנו שולפים את ה-LoginPage מהשירותים
+            var loginPage = IPlatformApplication.Current!.Services.GetService<LoginPage>()!;
+
+            // מחזירים חלון חדש שהדף שלו הוא LoginPage עטוף ב-NavigationPage
+            // זה מה שגורם לאפליקציה להתחיל בלוגין ולא במסך הראשי
+            return new Window(new NavigationPage(loginPage));
         }
     }
 }

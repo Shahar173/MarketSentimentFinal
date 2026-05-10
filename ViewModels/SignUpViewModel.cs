@@ -1,103 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MarketSentimentFinal.Models;
+using MarketSentimentFinal.Services;
+using MarketSentimentFinal.Services.DBService;
 
 namespace MarketSentimentFinal.ViewModels
 {
-    public class SignUpViewModel : INotifyPropertyChanged
+    public partial class SignUpViewModel : ObservableObject
     {
-        #region Fields
-        private string _firstName = string.Empty;
-        private string _lastName = string.Empty;
-        private string _email = string.Empty;
-        private string _password = string.Empty;
-        private bool _isBusy;
-        #endregion
+        private readonly IAppUserRepository _dbService;
 
-        #region Properties
-        public string FirstName
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
+        private string _firstName;
+
+        [ObservableProperty] private string _lastName;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
+        private string _email;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
+        private string _password;
+
+        [ObservableProperty] private string _mobile;
+        [ObservableProperty] private bool _isBusy;
+        [ObservableProperty] private string _errorMessage;
+        [ObservableProperty] private bool _signUpMessageVisible;
+
+        public SignUpViewModel(IAppUserRepository dbService)
         {
-            get => _firstName;
-            set { _firstName = value; OnPropertyChanged(); }
+            _dbService = dbService;
+
+            // נתוני התחלה ריקים (כי ביקשת לנקות)
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Email = string.Empty;
+            Password = string.Empty;
+            Mobile = string.Empty;
         }
 
-        public string LastName
+        [RelayCommand(CanExecute = nameof(Validate))]
+        private async Task SignUp()
         {
-            get => _lastName;
-            set { _lastName = value; OnPropertyChanged(); }
-        }
-
-        public string Email
-        {
-            get => _email;
-            set { _email = value; OnPropertyChanged(); }
-        }
-
-        public string Password
-        {
-            get => _password;
-            set { _password = value; OnPropertyChanged(); }
-        }
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set { _isBusy = value; OnPropertyChanged(); }
-        }
-        #endregion
-
-        #region Commands
-        public ICommand SignUpCommand { get; }
-        public ICommand BackToLoginCommand { get; }
-        #endregion
-
-        #region Constructor
-        public SignUpViewModel()
-        {
-            SignUpCommand = new Command(OnSignUp);
-            // חזרה אחורה לדף הקודם (לוגין)
-            BackToLoginCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
-        }
-        #endregion
-
-        #region Methods
-        private async void OnSignUp()
-        {
-            // בדיקה שכל השדות מלאים
-            if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
-            {
-                await Shell.Current.DisplayAlert("Missing Info", "Please fill in all fields", "OK");
-                return;
-            }
-
-            // בדיקת אורך סיסמה
-            if (Password.Length < 4)
-            {
-                await Shell.Current.DisplayAlert("Weak Password", "Password must be at least 4 characters", "OK");
-                return;
-            }
-
             IsBusy = true;
-            await Task.Delay(2000);
-            IsBusy = false;
+            SignUpMessageVisible = false;
 
-            await Shell.Current.DisplayAlert("Success", $"Welcome {FirstName}!", "OK");
-            await Shell.Current.GoToAsync("//MainPage");
+            var newUser = new AppUser()
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                Password = Password,
+                Mobile = Mobile ?? "0000000000",
+                RegDate = DateTime.Now,
+                LastLogin = DateTime.Now
+            };
+
+            try
+            {
+                newUser.Id = await _dbService.CreateAsync(newUser);
+
+                if (App.Current is App mainApp)
+                {
+                    mainApp.CurrentUser = newUser;
+                }
+
+                IsBusy = false;
+                await Shell.Current.DisplayAlert("Success", $"Welcome {FirstName}!", "OK");
+                await Shell.Current.GoToAsync("//MainPage");
+            }
+            catch (Exception ex)
+            {
+                IsBusy = false;
+                SignUpMessageVisible = true;
+                ErrorMessage = ex.Message;
+            }
         }
-        #endregion
 
-        #region INotifyPropertyChanged Implementation
-        public event PropertyChangedEventHandler? PropertyChanged; // הוספנו סימן שאלה
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        [RelayCommand]
+        private async Task BackToLogin()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            // ניווט חזרה ללוגין בצורה מפורשת כדי למנוע תקיעה
+            await Shell.Current.GoToAsync("//LoginPage");
         }
-        #endregion
+
+        private bool Validate()
+        {
+            return !string.IsNullOrWhiteSpace(FirstName) &&
+                   !string.IsNullOrWhiteSpace(Email) &&
+                   !string.IsNullOrWhiteSpace(Password) &&
+                   Password.Length >= 6;
+        }
     }
 }

@@ -1,9 +1,13 @@
-namespace MarketSentimentFinal.Views;
+using MarketSentimentFinal.ViewModels;
 
-public partial class SignUpPage : ContentPage
+namespace MarketSentimentFinal.Views
 {
-	public SignUpPage()
-	{
-		InitializeComponent();
-	}
+    public partial class SignUpPage : ContentPage
+    {
+        public SignUpPage(SignUpViewModel vm) // בדיוק כמו בלוגין
+        {
+            InitializeComponent();
+            BindingContext = vm;
+        }
+    }
 }
