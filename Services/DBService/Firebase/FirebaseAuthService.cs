@@ -9,73 +9,136 @@ namespace MarketSentimentFinal.Services
 {
     public class FirebaseAuthService : IAuthService
     {
-        private readonly FirebaseAuthClient _authClient;
+        private FirebaseAuthClient? _authClient;
+        private IAppLogger _logger;
 
-        public FirebaseAuthService()
+        public FirebaseAuthService(IAppLogger logger)
         {
-            // הגדרות החיבור לפיירבייס שלך
-            var config = new FirebaseAuthConfig
+            // Initialize Firebase Authentication Client
+            var config = new FirebaseAuthConfig()
             {
+                //current_key from google-services.json
                 ApiKey = "AIzaSyDgOIkrlszkwf5GQpPymAHpaeAqoP5ct9k",
-                AuthDomain = "fir-class-28e82.firebaseapp.com",
-                Providers = new FirebaseAuthProvider[]
-                {
-                    new EmailProvider()
-                }
-            };
 
+                //project_id from google-services.json + ".firebaseapp.com"
+                AuthDomain = "fir-class-28e82.firebaseapp.com",
+
+                Providers = new FirebaseAuthProvider[]
+                    {
+                        new EmailProvider()
+                    },
+                //UserRepository = new FileUserRepository("AppCurrentUser") //Save login status localy
+            };
             _authClient = new FirebaseAuthClient(config);
+            _logger = logger;
         }
 
         public async Task<string> SignIn(string userEmail, string userPassword)
         {
+            string errorMessage = string.Empty;
             try
             {
-                var userCredential = await _authClient.SignInWithEmailAndPasswordAsync(userEmail, userPassword);
-                // מחזיר את ה-UID של המשתמש (מזהה ייחודי)
-                return userCredential.User.Uid;
+                await _authClient!.SignInWithEmailAndPasswordAsync(userEmail, userPassword);
+                return _authClient.User.Info.Uid;
             }
             catch (FirebaseAuthException ex)
             {
-                // כאן נתפוס שגיאות ספציפיות של פיירבייס
-                string errorMessage = ex.Reason switch
+                if (ex.Message.Contains("INVALID_LOGIN_CREDENTIALS"))
                 {
-                    AuthErrorReason.InvalidEmailAddress => "כתובת אימייל לא תקינה",
-                    AuthErrorReason.WrongPassword => "סיסמה שגויה",
-                    AuthErrorReason.UserNotFound => "משתמש לא קיים",
-                    _ => "שגיאה בהתחברות: " + ex.Message
-                };
+                    errorMessage = "Incorrect email or password!"; //"אימייל או סיסמה אינם נכונים";
+                    _logger.LogDebug($" SignInAuth failed: {userEmail} {userPassword}, {errorMessage}");
+                }
+                else
+                {
+                    errorMessage = "SignInAuth failed: Unknown exception!";
+                    _logger.LogDebug($"SignInAuth failed: {userEmail} {userPassword}, Unknown exception!");
+                }
                 throw new Exception(errorMessage);
             }
-        }
+            catch (Exception ex)
+            {
+                _logger.LogDebug($"SignInAuth failed: {userEmail} {userPassword}, {ex.Message}");
+                throw new Exception("SignIn failed!");
+            }
 
+        }
         public async Task<string> CreateAuth(string userEmail, string userPassword)
         {
             try
             {
-                var userCredential = await _authClient.CreateUserWithEmailAndPasswordAsync(userEmail, userPassword);
-                return userCredential.User.Uid;
+                await _authClient!.CreateUserWithEmailAndPasswordAsync(userEmail, userPassword);
+                _logger.LogDebug($"AppUser Auth {userEmail} created successfully");
+                return _authClient.User.Uid;
             }
             catch (FirebaseAuthException ex)
             {
-                string errorMessage = ex.Reason switch
+                string errorMessage = string.Empty;
+
+                if (ex.Message.Contains("INVALID_EMAIL")) //Email failed validation - not real email
                 {
-                    AuthErrorReason.EmailExists => "האימייל כבר קיים במערכת",
-                    AuthErrorReason.InvalidEmailAddress => "כתובת אימייל לא תקינה",
-                    AuthErrorReason.WeakPassword => "הסיסמה חלשה מדי",
-                    _ => "שגיאה בהרשמה"
-                };
+                    errorMessage = "Invalid email adress!";
+                }
+                if (ex.Message.Contains("EMAIL_EXISTS"))
+                {
+                    errorMessage = "This email already exists!";
+                }
+                if (ex.Message.Contains("WEAK_PASSWORD"))
+                {
+                    errorMessage = "Weak password!";
+                }
+
+                _logger.LogDebug($"CreateUserAuth failed: {ex.Message}");
                 throw new Exception(errorMessage);
+
+                //// Exception reason
+                //AuthErrorReason reason = ex.Reason;
+
+                //string errorMessage = reason switch
+                //{
+                //	AuthErrorReason.InvalidEmailAddress => "Error: Incorrect email adress", // "כתובת האימייל לא תקינה",
+                //	AuthErrorReason.WrongPassword => "Error: Incorrect password", // "סיסמה שגויה",					
+                //	AuthErrorReason.EmailExists => "Error: This email allready exist", //"האימייל כבר רשום במערכת",
+                //	_ => "Error: Unknown exception" // "אירעה שגיאה לא ידועה"
+                //};
+
+                //_appLogger.LogDebug($"Firebase Auth creation failed: {errorMessage}");				
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug($"CreateUserAuth failed: {ex.Message}");
+                return "SignUp new user failed!";
             }
         }
+        public async Task RemoveAuth(string userEmail, string userPassword)
+        {
+            //try
+            //{
+            //	//1 Authenticate the user to be deleted
+            //	await _authClient!.SignInWithEmailAndPasswordAsync(userEmail, userPassword);
+            //	//2 Delete the authenticated user
+            //	await _authClient.User.DeleteAsync();
+            //	//3 Re-authenticate the previous logged in user
+            //	await _authClient!.SignInWithEmailAndPasswordAsync(
+            //		(App.Current as App)!.CurrentUser!.UserEmail,
+            //		(App.Current as App)!.CurrentUser!.UserPassword);
+
+            //	_logger.LogDebug($"User {userEmail} removed from Auth successfully");
+            //}
+            //catch (Exception ex)
+            //{
+            //	_logger.LogDebug($"Remove user {userEmail} from Auth failed: {ex.Message}");
+            //	throw new Exception("Remove user from Auth failed!");
+            //}
+        }
+
+        //public async Task RessetPassword(string email)
+        //{
+        //	await _authClient!.ResetEmailPasswordAsync(email);
+        //}
 
         public async Task SignOut()
         {
-            _authClient.SignOut();
-            await Task.CompletedTask;
+            throw new NotImplementedException();
         }
-
-        // מימוש זמני לפונקציות שכרגע לא בשימוש כדי שהקוד יתקמפל
-        public Task RemoveAuth(string userEmail, string userPassword) => Task.CompletedTask;
     }
-}   
+}
