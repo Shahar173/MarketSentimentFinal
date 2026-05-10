@@ -64,12 +64,23 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (_selectedUser == null || _userRepo == null) return;
 
+            // 1. עדכון האובייקט המקומי
             _selectedUser.FirstName = FirstName ?? string.Empty;
             _selectedUser.LastName = LastName ?? string.Empty;
             _selectedUser.Mobile = Mobile ?? string.Empty;
 
-            // קורא ל-UpdateUser שסידרנו ב-Interface
+            // 2. שמירה ב-Firebase (אסינכרוני)
             await _userRepo.UpdateAsync(_selectedUser);
+
+            // --- התיקון הקריטי: עדכון המשתמש הגלובלי בתוך האפליקציה ---
+            // בלי זה, שאר המסכים ימשיכו להראות את השם הישן עד שתעשה Login מחדש
+            var app = App.Current as App;
+            if (app != null && app.CurrentUser != null && app.CurrentUser.Email == _selectedUser.Email)
+            {
+                app.CurrentUser.FirstName = _selectedUser.FirstName;
+                app.CurrentUser.LastName = _selectedUser.LastName;
+                app.CurrentUser.Mobile = _selectedUser.Mobile;
+            }
 
             if (Shell.Current != null)
             {
@@ -82,12 +93,26 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (_selectedUser == null || _userRepo == null) return;
 
-            bool confirmed = await Shell.Current.DisplayAlert("Delete", "Are you sure?", "Yes", "No");
+            // אישור מחיקה מהמשתמש
+            bool confirmed = await Shell.Current.DisplayAlert("Delete Account",
+                $"Are you sure you want to delete {FirstName}?", "Yes", "No");
+
             if (!confirmed) return;
 
-            // קורא ל-RemoveUser שסידרנו ב-Interface
-            await _userRepo.DeleteAsync(_selectedUser);
-            await Shell.Current.GoToAsync("//MainPage");
+            try
+            {
+                // קריאה למימוש החדש ב-Repository
+                await _userRepo.DeleteAsync(_selectedUser);
+
+                await Shell.Current.DisplayAlert("Deleted", "User has been removed.", "OK");
+
+                // ניווט מוחלט חזרה לדף הראשי (או לדף הבית של האדמין)
+                await Shell.Current.GoToAsync("//MainPage");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", "Could not delete user. Try again.", "OK");
+            }
         }
     }
 }

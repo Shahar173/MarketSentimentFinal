@@ -6,7 +6,8 @@
     xmlns:models="clr-namespace:MarketSentimentFinal.Models"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     x:DataType="vm:UsersListViewModel"
-    NavigationPage.HasNavigationBar="False">
+    NavigationPage.HasNavigationBar="False"
+    Shell.BackButtonBehavior="{BackButtonBehavior IsVisible=False}">
 
     <ContentPage.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">

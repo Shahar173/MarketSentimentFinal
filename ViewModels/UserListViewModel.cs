@@ -33,9 +33,14 @@ namespace MarketSentimentFinal.ViewModels
 
         public async Task LoadAllUsers()
         {
-            var usersFromDb = _userRepo.GetAllAsync();
-            _allUsersList = usersFromDb;
-            UpdateCollection(usersFromDb);
+            // עכשיו זה יעבוד כי הפונקציה ב-Interface היא Task
+            var usersFromDb = await _userRepo.GetAllAsync();
+
+            if (usersFromDb != null)
+            {
+                _allUsersList = usersFromDb;
+                UpdateCollection(_allUsersList);
+            }
         }
 
         private void OnSearch()

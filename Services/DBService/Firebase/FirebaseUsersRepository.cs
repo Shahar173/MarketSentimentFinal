@@ -73,14 +73,35 @@ namespace MarketSentimentFinal.Services
             }
         }
 
-        public Task DeleteAsync(AppUser appUser)
+        public async Task DeleteAsync(AppUser appUser)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _firebaseClient!
+                    .Child("users")
+                    .Child(appUser.Id)
+                    .DeleteAsync();
+
+                _appLogger.LogDebug($"FirebaseUsersRepository {appUser.Email} deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogDebug($"FirebaseUsersRepository Delete failed: {ex.Message}");
+                throw new Exception("Delete user failed!");
+            }
         }
 
-        public List<AppUser> GetAllAsync()
+        public async Task<List<AppUser>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var firebaseUsers = await _firebaseClient!
+                .Child("users")
+                .OnceAsync<AppUser>();
+
+            return firebaseUsers.Select(item => {
+                var u = item.Object;
+                u.Id = item.Key;
+                return u;
+            }).ToList();
         }
 
         public async Task<AppUser> GetUserByIdAsync(string userId)
@@ -147,9 +168,23 @@ namespace MarketSentimentFinal.Services
             }
         }
 
-        public Task UpdateAsync(AppUser appUser)
+        public async Task UpdateAsync(AppUser appUser)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // משתמשים ב-_firebaseClient ובנתיב "users" (קטן) כפי שמופיע בשאר הקוד שלך
+                await _firebaseClient!
+                    .Child("users")
+                    .Child(appUser.Id)
+                    .PutAsync(appUser);
+
+                _appLogger.LogDebug($"FirebaseUsersRepository {appUser.Email} updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogDebug($"FirebaseUsersRepository Update failed: {ex.Message}");
+                throw new Exception("Update user failed!");
+            }
         }
     }
 }

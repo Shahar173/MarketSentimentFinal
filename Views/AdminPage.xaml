@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     x:DataType="vm:AdminPageViewModel"
+    ClassId="AdminPage"
     NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Background>

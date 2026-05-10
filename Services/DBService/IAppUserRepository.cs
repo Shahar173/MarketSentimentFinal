@@ -11,7 +11,8 @@ namespace MarketSentimentFinal.Services
         Task DeleteAsync(AppUser appUser);
         Task<AppUser> SignInAsync(string userEmail, string userPassword);
         Task<AppUser> GetUserByIdAsync(string userId);
-        List<AppUser> GetAllAsync(); // לפי הפורמט השני ששלחת
+        // שנה את השורה הזו מ-List ל-Task<List>
+        Task<List<AppUser>> GetAllAsync();
         Task SetToAdmin(string userId);
     }
 }

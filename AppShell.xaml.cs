@@ -31,6 +31,7 @@ namespace MarketSentimentFinal
             Routing.RegisterRoute("UserDetailsPage", typeof(UserDetailsPage));
             Routing.RegisterRoute("AdminPage", typeof(AdminPage));
             Routing.RegisterRoute("UsersListPage", typeof(UsersListPage));
+            Routing.RegisterRoute("UsersListPage", typeof(UsersListPage));
         }
     }
 }

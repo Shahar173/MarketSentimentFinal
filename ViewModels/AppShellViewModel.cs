@@ -13,6 +13,7 @@ namespace MarketSentimentFinal.ViewModels
         public ICommand GoToAccountCommand { get; }
         public ICommand GoToAdminCommand { get; }
         public ICommand LogoutCommand { get; }
+        public ICommand GoBackCommand { get; }
 
         public AppShellViewModel()
         {
@@ -20,6 +21,7 @@ namespace MarketSentimentFinal.ViewModels
             GoToHomeCommand = new Command(async () => await Shell.Current.GoToAsync("//MainPage"));
             GoToAccountCommand = new Command(async () => await Shell.Current.GoToAsync("//UserDetailsPage"));
             GoToAdminCommand = new Command(async () => await Shell.Current.GoToAsync("//AdminPage"));
+            GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
 
             LogoutCommand = new Command(async () => await Logout());
         }

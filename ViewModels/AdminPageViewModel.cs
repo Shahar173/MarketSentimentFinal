@@ -8,9 +8,9 @@ namespace MarketSentimentFinal.ViewModels
 
         public AdminPageViewModel()
         {
-            // הניווט כאן מותאם ל-Route של רשימת המשתמשים
+            // התיקון: ניווט יחסי (בלי //) כדי שה-Shell ימצא את ה-Route הרשום
             ViewUsersCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("//UsersListPage"));
+                await Shell.Current.GoToAsync("UsersListPage"));
         }
     }
 }
