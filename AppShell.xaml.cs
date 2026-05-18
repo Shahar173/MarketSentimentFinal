@@ -1,5 +1,6 @@
 ﻿using MarketSentimentFinal.ViewModels;
 using MarketSentimentFinal.Views;
+using MarketSentimentFinal.Views.News;
 
 namespace MarketSentimentFinal
 {
@@ -10,28 +11,26 @@ namespace MarketSentimentFinal
             InitializeComponent();
             BindingContext = viewModel;
 
-            // 1. הפיכת הסרגל לשקוף
             Shell.SetBackgroundColor(this, Colors.Transparent);
             Shell.SetTitleColor(this, Colors.White);
 
-            // 2. התיקון הקריטי: העלמת הפס השחור בצד והרחבת ה-TitleView לכל הרוחב
             Microsoft.Maui.Handlers.ToolbarHandler.Mapper.AppendToMapping("CustomToolbar", (handler, view) =>
             {
 #if ANDROID
-                // מבטל את השוליים הפנימיים של ה-Toolbar ב-Android
                 handler.PlatformView.SetContentInsetsAbsolute(0, 0);
                 handler.PlatformView.ContentInsetStartWithNavigation = 0;
 #endif
             });
 
-            // רישום נתיבים
+            // Standard route registrations
             Routing.RegisterRoute("SignUpPage", typeof(SignUpPage));
             Routing.RegisterRoute("LoginPage", typeof(LoginPage));
-            Routing.RegisterRoute("MainPage", typeof(MainPage));
-            Routing.RegisterRoute("UserDetailsPage", typeof(UserDetailsPage));
-            Routing.RegisterRoute("AdminPage", typeof(AdminPage));
-            Routing.RegisterRoute("UsersListPage", typeof(UsersListPage));
-            Routing.RegisterRoute("UsersListPage", typeof(UsersListPage));
+
+            // Registered ONLY here so they act as standard stack pushes
+            Routing.RegisterRoute("ViewNewsPage", typeof(ViewNewsPage));
+            Routing.RegisterRoute("NewsDetailsPage", typeof(NewsDetailsPage));
+            Routing.RegisterRoute("SentimentDetailsPage", typeof(SentimentDetailsPage));
+            Routing.RegisterRoute("FearAndGreedPage", typeof(FearAndGreedPage));
         }
     }
 }

@@ -2,6 +2,8 @@
 using MarketSentimentFinal.Services.DBService;
 using MarketSentimentFinal.ViewModels;
 using MarketSentimentFinal.Views;
+using MarketSentimentFinal.Views.News;
+using MarketSentimentFinal.ViewModels.News;
 using Microsoft.Extensions.Logging;
 
 namespace MarketSentimentFinal
@@ -17,13 +19,14 @@ namespace MarketSentimentFinal
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons"); 
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
 
             // --- רישום ה-Services ---
             builder.Services.AddSingleton<IAppLogger, LogService>();
             builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
             builder.Services.AddSingleton<IAppUserRepository, FirebaseUsersRepository>();
+            builder.Services.AddSingleton<INewsService, CryptoNewsService>();
 
             // --- רישום ה-Views ---
             builder.Services.AddTransient<LoginPage>();
@@ -34,6 +37,15 @@ namespace MarketSentimentFinal
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<AppShell>();
 
+            // News page layouts
+            builder.Services.AddTransient<ViewNewsPage>();
+            builder.Services.AddTransient<NewsDetailsPage>();
+
+            // FIXED: Added registration for your new Sentiment Details screen layout
+            builder.Services.AddTransient<SentimentDetailsPage>();
+
+            builder.Services.AddTransient<FearAndGreedPage>();
+
             // --- רישום ה-ViewModels ---
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<SignUpViewModel>();
@@ -43,7 +55,16 @@ namespace MarketSentimentFinal
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<AppShellViewModel>();
 
+            // News ViewModels
+            builder.Services.AddTransient<ViewNewsViewModel>();
+            builder.Services.AddTransient<NewsDetailsViewModel>();
+
+            // FIXED: Added registration for your new Sentiment Details backend controller
+            builder.Services.AddTransient<SentimentDetailsViewModel>();
+            builder.Services.AddTransient<FearAndGreedViewModel>();
+
 #if DEBUG
+            // FIXED: Cleanly broken down out of the comment line string above so the debugger builds
             builder.Logging.AddDebug();
 #endif
 

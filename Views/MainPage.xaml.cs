@@ -1,14 +1,15 @@
 using MarketSentimentFinal.ViewModels;
 
-namespace MarketSentimentFinal.Views;
-
-public partial class MainPage : ContentPage
+namespace MarketSentimentFinal.Views
 {
-    public MainPage(MainPageViewModel vm)
+    public partial class MainPage : ContentPage
     {
-        InitializeComponent();
+        public MainPage(MainPageViewModel viewModel)
+        {
+            InitializeComponent();
 
-        // חיבור ה-ViewModel לדף כדי שה-Binding יעבוד
-        BindingContext = vm;
+            // This links the architecture layer dynamically to stop runtime initialization failures
+            BindingContext = viewModel;
+        }
     }
 }

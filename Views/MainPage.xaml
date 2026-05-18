@@ -15,120 +15,159 @@
     </ContentPage.Background>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,0,20,30" Spacing="15">
+        <VerticalStackLayout Padding="25,30" Spacing="25">
 
-            <Label
-                Margin="5,15,0,10"
-                FontAttributes="Bold"
-                FontSize="26"
-                HorizontalOptions="Start"
-                Text="MARKET NEWS"
-                TextColor="White" />
+            <VerticalStackLayout Spacing="4">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="28"
+                    HorizontalOptions="Center"
+                    Text="Market mood"
+                    TextColor="White" />
+                <Label
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    Text="Select an analytics route to evaluate the market state"
+                    TextColor="#B0BEC5" />
+            </VerticalStackLayout>
 
-            <Border
-                Padding="20"
-                BackgroundColor="White"
-                StrokeShape="RoundRectangle 15"
-                StrokeThickness="0">
-                <VerticalStackLayout Spacing="8">
-                    <HorizontalStackLayout Spacing="10">
-                        <Border
-                            Padding="8,2"
-                            BackgroundColor="#E8F5E9"
-                            StrokeShape="RoundRectangle 5">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="10"
-                                Text="BULLISH"
-                                TextColor="#2E7D32" />
-                        </Border>
+            <Grid>
+                <Border
+                    BackgroundColor="#1Affffff"
+                    Stroke="#3300B4DB"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="#00B4DB"
+                            Opacity="0.4"
+                            Radius="8"
+                            Offset="0,0" />
+                    </Border.Shadow>
+                    <Grid BackgroundColor="Transparent" MinimumHeightRequest="100" />
+                </Border>
+                <Grid
+                    Padding="20"
+                    ColumnDefinitions="*, Auto"
+                    VerticalOptions="Center">
+                    <VerticalStackLayout
+                        Grid.Column="0"
+                        Spacing="4"
+                        VerticalOptions="Center">
                         <Label
-                            FontSize="11"
-                            Text="CRYPTO • 2m ago"
-                            TextColor="#777777"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="18"
-                        Text="Bitcoin Testing Key Resistance Levels"
-                        TextColor="#1A1A1A" />
-                    <Label
-                        FontSize="13"
-                        Text="Market analysts are watching the $72,000 mark closely as trade volume increases across major exchanges."
-                        TextColor="#444444" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Border
-                Padding="20"
-                BackgroundColor="White"
-                StrokeShape="RoundRectangle 15"
-                StrokeThickness="0">
-                <VerticalStackLayout Spacing="8">
-                    <HorizontalStackLayout Spacing="10">
-                        <Border
-                            Padding="8,2"
-                            BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 5">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="10"
-                                Text="NEUTRAL"
-                                TextColor="#616161" />
-                        </Border>
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="📰 News list"
+                            TextColor="White" />
                         <Label
-                            FontSize="11"
-                            Text="GOLD • 15m ago"
-                            TextColor="#777777"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                    <Label
+                            FontSize="12"
+                            Text="Evaluate real-time incoming ecosystem intelligence feeds."
+                            TextColor="#CFD8DC" />
+                    </VerticalStackLayout>
+                    <Button
+                        Grid.Column="1"
+                        BackgroundColor="#00B4DB"
+                        Command="{Binding GoToNewsCommand}"
+                        CornerRadius="8"
                         FontAttributes="Bold"
-                        FontSize="18"
-                        Text="XAU/USD Price Consolidation"
-                        TextColor="#1A1A1A" />
-                    <Label
-                        FontSize="13"
-                        Text="Gold prices remain steady today as investors wait for the upcoming inflation data report later this week."
-                        TextColor="#444444" />
-                </VerticalStackLayout>
-            </Border>
+                        HeightRequest="40"
+                        Text="Open"
+                        TextColor="White"
+                        WidthRequest="80" />
+                </Grid>
+            </Grid>
 
-            <Border
-                Padding="20"
-                BackgroundColor="White"
-                StrokeShape="RoundRectangle 15"
-                StrokeThickness="0">
-                <VerticalStackLayout Spacing="8">
-                    <HorizontalStackLayout Spacing="10">
-                        <Border
-                            Padding="8,2"
-                            BackgroundColor="#E8F5E9"
-                            StrokeShape="RoundRectangle 5">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="10"
-                                Text="BULLISH"
-                                TextColor="#2E7D32" />
-                        </Border>
+            <Grid>
+                <Border
+                    BackgroundColor="#1Affffff"
+                    Stroke="#3300B4DB"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="#00B4DB"
+                            Opacity="0.4"
+                            Radius="8"
+                            Offset="0,0" />
+                    </Border.Shadow>
+                    <Grid BackgroundColor="Transparent" MinimumHeightRequest="100" />
+                </Border>
+                <Grid
+                    Padding="20"
+                    ColumnDefinitions="*, Auto"
+                    VerticalOptions="Center">
+                    <VerticalStackLayout
+                        Grid.Column="0"
+                        Spacing="4"
+                        VerticalOptions="Center">
                         <Label
-                            FontSize="11"
-                            Text="STOCKS • 1h ago"
-                            TextColor="#777777"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                    <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="📊 Sentiment diagnostics"
+                            TextColor="White" />
+                        <Label
+                            FontSize="12"
+                            Text="View general market metrics and active momentum directions."
+                            TextColor="#CFD8DC" />
+                    </VerticalStackLayout>
+                    <Button
+                        Grid.Column="1"
+                        BackgroundColor="#00B4DB"
+                        Command="{Binding GoToSentimentDetailsCommand}"
+                        CornerRadius="8"
                         FontAttributes="Bold"
-                        FontSize="18"
-                        Text="Tech Giants Rally on AI Expectations"
-                        TextColor="#1A1A1A" />
-                    <Label
-                        FontSize="13"
-                        Text="Major technology stocks see significant gains as new AI integration plans are announced by industry leaders."
-                        TextColor="#444444" />
-                </VerticalStackLayout>
-            </Border>
+                        HeightRequest="40"
+                        Text="Open"
+                        TextColor="White"
+                        WidthRequest="80" />
+                </Grid>
+            </Grid>
+
+            <Grid>
+                <Border
+                    BackgroundColor="#1Affffff"
+                    Stroke="#3300B4DB"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="#00B4DB"
+                            Opacity="0.4"
+                            Radius="8"
+                            Offset="0,0" />
+                    </Border.Shadow>
+                    <Grid BackgroundColor="Transparent" MinimumHeightRequest="100" />
+                </Border>
+                <Grid
+                    Padding="20"
+                    ColumnDefinitions="*, Auto"
+                    VerticalOptions="Center">
+                    <VerticalStackLayout
+                        Grid.Column="0"
+                        Spacing="4"
+                        VerticalOptions="Center">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="📈 Fear &amp; greed history"
+                            TextColor="White" />
+                        <Label
+                            FontSize="12"
+                            Text="Track historical timelines and valuation cycles parameters."
+                            TextColor="#CFD8DC" />
+                    </VerticalStackLayout>
+                    <Button
+                        Grid.Column="1"
+                        BackgroundColor="#00B4DB"
+                        Command="{Binding GoToFearAndGreedCommand}"
+                        CornerRadius="8"
+                        FontAttributes="Bold"
+                        HeightRequest="40"
+                        Text="Open"
+                        TextColor="White"
+                        WidthRequest="80" />
+                </Grid>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

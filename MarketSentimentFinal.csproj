@@ -52,10 +52,22 @@
 		<MauiXaml Update="Views\AdminPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Views\FearAndGreedPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\LoginPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\MainPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\News\NewsDetailsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\News\ViewNewsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\SentimentDetailsPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\SignUpPage.xaml">
@@ -67,6 +79,13 @@
 		<MauiXaml Update="Views\UserListPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModels\Auth\" />
+	  <Folder Include="ViewModels\Admin\" />
+	  <Folder Include="Views\Auth\" />
+	  <Folder Include="Views\Admin\" />
 	</ItemGroup>
 
 </Project>
