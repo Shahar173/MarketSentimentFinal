@@ -153,12 +153,9 @@
                                     TextColor="#78909C" />
                             </VerticalStackLayout>
 
-                            <Grid
-                                Margin="45,10,10,10"
-                                HeightRequest="180"
-                                HorizontalOptions="FillAndExpand">
+                            <Grid Margin="45,10,10,10" HeightRequest="180">
                                 <Polyline
-                                    Points="0,140 60,120 120,130 180,80 240,60 300,30"
+                                    Points="{Binding GraphPoints}"
                                     Stroke="{Binding IndexColorGlow}"
                                     StrokeThickness="3" />
                             </Grid>
