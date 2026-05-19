@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="MarketSentimentFinal.Views.Components.FloatingNavBar"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MarketSentimentFinal.Converters"
+    x:Name="this">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:PageMatchConverter x:Key="PageMatchConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border
+        Margin="30,0,30,15"
+        BackgroundColor="#121622"
+        HeightRequest="55"
+        Stroke="#1E232F"
+        StrokeShape="RoundRectangle 25"
+        StrokeThickness="1"
+        VerticalOptions="End">
+        <Grid Padding="10,0" ColumnDefinitions="*,*,*,*,*">
+            <VerticalStackLayout
+                Grid.Column="0"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnHomeClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="📈" />
+                <Ellipse
+                    Fill="#3399FF"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Home'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Column="1"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnWhaleTrackerClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="🐋" />
+                <Ellipse
+                    Fill="#3399FF"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Whales'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Column="2"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnChatAssistantClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="💬" />
+                <Ellipse
+                    Fill="#3399FF"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Chat'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Column="3"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnNewsClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="📰" />
+                <Ellipse
+                    Fill="#3399FF"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='News'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Column="4"
+                Spacing="2"
+                VerticalOptions="Center">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnAccountClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="⚙️" />
+                <Ellipse
+                    Fill="#3399FF"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Account'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

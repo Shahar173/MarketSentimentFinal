@@ -3,135 +3,143 @@
     x:Class="MarketSentimentFinal.Views.News.ViewNewsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:components="clr-namespace:MarketSentimentFinal.Views.Components"
+    xmlns:models="clr-namespace:MarketSentimentFinal.Models"
+    xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels.News"
     Title="Live Crypto News"
+    x:DataType="vm:ViewNewsViewModel"
     Shell.NavBarIsVisible="False">
 
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0.0" Color="#0F2027" />
-            <GradientStop Offset="0.5" Color="#203A43" />
-            <GradientStop Offset="1.0" Color="#2C5364" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
+    <Grid BackgroundColor="#05070A">
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="End"
+            TranslationX="150"
+            TranslationY="-150"
+            VerticalOptions="Start"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-    <Grid RowDefinitions="Auto, *">
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="Start"
+            TranslationX="-150"
+            TranslationY="150"
+            VerticalOptions="End"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
         <Grid
-            Grid.Row="0"
-            Padding="20,15,20,5"
-            ColumnDefinitions="Auto, *, Auto">
-            <Button
-                Grid.Column="0"
-                Padding="15,0"
-                BackgroundColor="#1F353D"
-                Command="{Binding GoBackCommand}"
-                CornerRadius="8"
-                FontAttributes="Bold"
+            Padding="20,15,20,0"
+            RowDefinitions="Auto, Auto, Auto, *, Auto"
+            RowSpacing="12">
+
+            <Image
+                Grid.Row="0"
                 HeightRequest="40"
-                HorizontalOptions="Start"
-                Text="⬅ Back"
+                HorizontalOptions="Center"
+                Source="market_mood_logo.png"
+                WidthRequest="40">
+                <Image.Clip>
+                    <EllipseGeometry
+                        Center="20,20"
+                        RadiusX="20"
+                        RadiusY="20" />
+                </Image.Clip>
+            </Image>
+
+            <Label
+                Grid.Row="1"
+                FontAttributes="Bold"
+                FontSize="20"
+                HorizontalOptions="Center"
+                Text="Live Crypto News"
                 TextColor="White" />
 
             <Button
-                Grid.Column="1"
-                Margin="0,0,10,0"
-                Padding="15,0"
-                BackgroundColor="#00B4DB"
+                Grid.Row="2"
+                BackgroundColor="#1E3A8A"
                 Command="{Binding FetchNewsCommand}"
                 CornerRadius="8"
-                FontAttributes="Bold"
-                HeightRequest="40"
-                HorizontalOptions="End"
+                HeightRequest="35"
+                HorizontalOptions="Center"
                 Text="🔄 Fetch Latest News"
-                TextColor="White" />
+                WidthRequest="200" />
 
-            <ActivityIndicator
-                Grid.Column="2"
-                HeightRequest="30"
-                IsRunning="{Binding IsLoading}"
-                IsVisible="{Binding IsLoading}"
-                VerticalOptions="Center"
-                WidthRequest="30"
-                Color="#00B4DB" />
-        </Grid>
+            <CollectionView
+                Grid.Row="3"
+                Margin="0,5"
+                BackgroundColor="Transparent"
+                ItemsSource="{Binding NewsList}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:NewsArticle">
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="12"
+                            BackgroundColor="#0F172A"
+                            Stroke="#1E3A8A"
+                            StrokeShape="RoundRectangle 10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="25,20,25,30" Spacing="5">
-                <CollectionView ItemsSource="{Binding NewsList}" SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,0,0,25">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.GoToDetailsCommand}" CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-
-                                <Border
-                                    BackgroundColor="#1Affffff"
-                                    Stroke="{Binding SentimentColor}"
-                                    StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 15">
-                                    <Border.Shadow>
-                                        <Shadow 
-                                            Brush="{Binding SentimentColor}" 
-                                            Radius="14" 
-                                            Opacity="0.75" 
-                                            Offset="0,0" />
-                                    </Border.Shadow>
-
-                                    <Grid BackgroundColor="Transparent" MinimumHeightRequest="80" />
-                                </Border>
-
-                                <VerticalStackLayout Padding="20" Spacing="2">
-                                    <HorizontalStackLayout Spacing="10" Margin="0,0,0,6">
-                                        <Border
-                                            Padding="8,3"
-                                            BackgroundColor="{Binding SentimentColor}"
-                                            StrokeShape="RoundRectangle 5"
-                                            StrokeThickness="0">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                FontSize="10"
-                                                Text="{Binding Sentiment}"
-                                                TextColor="White" />
-                                        </Border>
+                            <VerticalStackLayout Spacing="8">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border
+                                        Padding="6,2"
+                                        BackgroundColor="{Binding SentimentColor}"
+                                        StrokeShape="RoundRectangle 4"
+                                        StrokeThickness="0">
                                         <Label
-                                            FontSize="11"
-                                            Text="{Binding Source}"
-                                            TextColor="#B0BEC5"
                                             FontAttributes="Bold"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            FontSize="11"
-                                            Text="•"
-                                            TextColor="#78909C"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            FontSize="11"
-                                            Text="{Binding PublishedAt}"
-                                            TextColor="#B0BEC5"
-                                            VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
-
+                                            FontSize="9"
+                                            Text="{Binding Sentiment}"
+                                            TextColor="White" />
+                                    </Border>
                                     <Label
-                                        FontAttributes="Bold"
-                                        FontSize="18"
-                                        Text="{Binding Title}"
-                                        TextColor="White"
-                                        Margin="0,0,0,4" />
+                                        FontSize="10"
+                                        Text="{Binding Source}"
+                                        TextColor="#94A3B8"
+                                        VerticalOptions="Center" />
+                                </HorizontalStackLayout>
 
-                                    <Label
-                                        FontSize="13"
-                                        LineBreakMode="TailTruncation"
-                                        LineHeight="1.2"
-                                        MaxLines="3"
-                                        Text="{Binding Description}"
-                                        TextColor="#CFD8DC" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
-        </ScrollView>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding Title}"
+                                    TextColor="White" />
+                                <Label
+                                    FontSize="11"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="2"
+                                    Text="{Binding Description}"
+                                    TextColor="#94A3B8" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <components:FloatingNavBar
+                Grid.Row="4"
+                Margin="0,0,0,10"
+                ActivePage="News"
+                VerticalOptions="End" />
+        </Grid>
     </Grid>
 </ContentPage>

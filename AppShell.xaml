@@ -3,150 +3,44 @@
     x:Class="MarketSentimentFinal.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:news="clr-namespace:MarketSentimentFinal.Views.News"
     xmlns:views="clr-namespace:MarketSentimentFinal.Views"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     x:DataType="vm:AppShellViewModel"
-    Shell.BackButtonBehavior="{BackButtonBehavior IsVisible=False}"
-    Shell.NavBarHasShadow="False">
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
 
     <Shell.Resources>
         <Style ApplyToDerivedTypes="True" TargetType="Shell">
-            <Setter Property="Shell.BackgroundColor" Value="Transparent" />
-            <Setter Property="Shell.TitleColor" Value="White" />
-            <Setter Property="Shell.TabBarIsVisible" Value="False" />
+            <Setter Property="Shell.BackgroundColor" Value="#05070A" />
         </Style>
     </Shell.Resources>
 
-    <Shell.TitleView>
-        <Grid
-            Margin="-20,0"
-            HeightRequest="60"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand">
-            <Border StrokeThickness="0">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Offset="0.0" Color="#203A43" />
-                        <GradientStop Offset="1.0" Color="#0F2027" />
-                    </LinearGradientBrush>
-                </Border.Background>
-
-                <Grid ColumnDefinitions="Auto, *">
-                    <Button
-                        Grid.Column="0"
-                        Margin="15,0,0,0"
-                        Padding="0"
-                        BackgroundColor="Transparent"
-                        Command="{Binding GoBackCommand}"
-                        FontFamily="MaterialIcons"
-                        FontSize="24"
-                        HeightRequest="44"
-                        HorizontalOptions="Start"
-                        Text="&#xe5c4;"
-                        TextColor="White"
-                        VerticalOptions="Center"
-                        WidthRequest="44">
-
-                        <Button.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=CurrentPage.ClassId}"
-                                TargetType="Button"
-                                Value="MainPage">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-
-                            <DataTrigger
-                                Binding="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=CurrentPage.ClassId}"
-                                TargetType="Button"
-                                Value="AdminPage">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
-
-                    <HorizontalStackLayout
-                        Grid.Column="1"
-                        Margin="0,0,74,0"
-                        HeightRequest="50"
-                        HorizontalOptions="Center"
-                        Spacing="18"
-                        VerticalOptions="Center">
-
-                        <Button
-                            Padding="0"
-                            BackgroundColor="#22FFFFFF"
-                            Command="{Binding GoToHomeCommand}"
-                            CornerRadius="10"
-                            FontFamily="MaterialIcons"
-                            FontSize="22"
-                            HeightRequest="44"
-                            Text="&#xe88a;"
-                            TextColor="#00B4DB"
-                            WidthRequest="44" />
-                        <Button
-                            Padding="0"
-                            BackgroundColor="#22FFFFFF"
-                            Command="{Binding GoToAccountCommand}"
-                            CornerRadius="10"
-                            FontFamily="MaterialIcons"
-                            FontSize="22"
-                            HeightRequest="44"
-                            Text="&#xe7fd;"
-                            TextColor="#00B4DB"
-                            WidthRequest="44" />
-                        <Button
-                            Padding="0"
-                            BackgroundColor="#22FFFFFF"
-                            Command="{Binding GoToAdminCommand}"
-                            CornerRadius="10"
-                            FontFamily="MaterialIcons"
-                            FontSize="22"
-                            HeightRequest="44"
-                            IsVisible="{Binding IsAdmin}"
-                            Text="&#xf02e;"
-                            TextColor="#4FC3F7"
-                            WidthRequest="44" />
-                        <Button
-                            Padding="0"
-                            BackgroundColor="#22FFFFFF"
-                            Command="{Binding LogoutCommand}"
-                            CornerRadius="10"
-                            FontFamily="MaterialIcons"
-                            FontSize="22"
-                            HeightRequest="44"
-                            Text="&#xe9ba;"
-                            TextColor="#FF8A80"
-                            WidthRequest="44" />
-                    </HorizontalStackLayout>
-                </Grid>
-            </Border>
-        </Grid>
-    </Shell.TitleView>
-
     <TabBar Route="MainSection">
         <ShellContent
-            Title="Home"
             ContentTemplate="{DataTemplate views:MainPage}"
-            Route="MainPage" />
+            Route="MainPage"
+            Shell.PresentationMode="Animated" />
         <ShellContent
-            Title="Account"
+            ContentTemplate="{DataTemplate news:ViewNewsPage}"
+            Route="ViewNewsPage"
+            Shell.PresentationMode="Animated" />
+        <ShellContent
             ContentTemplate="{DataTemplate views:UserDetailsPage}"
-            Route="UserDetailsPage" />
+            Route="UserDetailsPage"
+            Shell.PresentationMode="Animated" />
         <ShellContent
-            Title="Admin"
             ContentTemplate="{DataTemplate views:AdminPage}"
-            Route="AdminPage" />
+            Route="AdminPage"
+            Shell.PresentationMode="Animated" />
         <ShellContent
-            Title="Users"
             ContentTemplate="{DataTemplate views:UsersListPage}"
-            Route="UsersListPage" />
+            Route="UsersListPage"
+            Shell.PresentationMode="Animated" />
     </TabBar>
 
     <FlyoutItem FlyoutItemIsVisible="False" Route="LoginSection">
-        <ShellContent
-            Title="Login"
-            ContentTemplate="{DataTemplate views:LoginPage}"
-            Route="LoginPage"
-            Shell.NavBarIsVisible="False" />
+        <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" Route="LoginPage" />
     </FlyoutItem>
+
 </Shell>

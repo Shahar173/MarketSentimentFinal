@@ -10,7 +10,7 @@ namespace MarketSentimentFinal.ViewModels.News
         private readonly INewsService _newsService;
         private bool _isLoading;
 
-        public ObservableCollection<NewsArticle> NewsList { get; set; } = new();
+        public ObservableCollection<NewsArticle> NewsList { get; } = new();
 
         public bool IsLoading
         {
@@ -28,7 +28,6 @@ namespace MarketSentimentFinal.ViewModels.News
 
             FetchNewsCommand = new Command(async () => await LoadNewsAsync());
 
-            // Fixed: Push to NewsDetailsPage as a relative sub-route stack append 
             GoToDetailsCommand = new Command<NewsArticle>(async (article) =>
             {
                 if (article == null) return;
@@ -36,45 +35,46 @@ namespace MarketSentimentFinal.ViewModels.News
                 await Shell.Current.GoToAsync("NewsDetailsPage", navParams);
             });
 
-            // Fixed: Reset cleanly back out to the main dashboard module layer
-            GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
+            // Using // to force a push-animation back to root
+            GoBackCommand = new Command(async () => await Shell.Current.GoToAsync("//MainPage"));
         }
 
         private async Task LoadNewsAsync()
         {
             if (IsLoading) return;
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                IsLoading = true;
-                NewsList.Clear();
-            });
+            IsLoading = true;
 
             try
             {
                 var articles = await _newsService.GetCryptoNewsAsync();
 
+                // Ensure we interact with the ObservableCollection on the Main Thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    if (articles != null)
+                    NewsList.Clear();
+
+                    if (articles != null && articles.Any())
                     {
                         foreach (var article in articles)
                         {
                             NewsList.Add(article);
                         }
                     }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Service returned null or empty list.");
+                    }
                 });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading news UI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading news: {ex.Message}");
             }
             finally
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    IsLoading = false;
-                });
+                // Ensure IsLoading is reset on Main Thread to stop any UI activity indicators
+                MainThread.BeginInvokeOnMainThread(() => IsLoading = false);
             }
         }
     }
