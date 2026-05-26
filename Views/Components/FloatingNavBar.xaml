@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:MarketSentimentFinal.Converters"
-    x:Name="this">
+    x:Name="this"
+    x:DataType="{x:Null}">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -21,6 +22,7 @@
         StrokeThickness="1"
         VerticalOptions="End">
         <Grid Padding="10,0" ColumnDefinitions="*,*,*,*,*">
+
             <VerticalStackLayout
                 Grid.Column="0"
                 Spacing="2"
@@ -39,6 +41,7 @@
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Home'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
+
             <VerticalStackLayout
                 Grid.Column="1"
                 Spacing="2"
@@ -57,6 +60,7 @@
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Whales'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
+
             <VerticalStackLayout
                 Grid.Column="2"
                 Spacing="2"
@@ -64,7 +68,7 @@
                 <Button
                     Padding="0"
                     BackgroundColor="Transparent"
-                    Clicked="OnChatAssistantClicked"
+                    Clicked="OnChatClicked"
                     FontSize="18"
                     HeightRequest="30"
                     Text="💬" />
@@ -75,6 +79,7 @@
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Chat'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
+
             <VerticalStackLayout
                 Grid.Column="3"
                 Spacing="2"
@@ -93,6 +98,7 @@
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='News'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
+
             <VerticalStackLayout
                 Grid.Column="4"
                 Spacing="2"
@@ -111,6 +117,7 @@
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Account'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
+
         </Grid>
     </Border>
 </ContentView>

@@ -19,9 +19,13 @@ namespace MarketSentimentFinal
             Routing.RegisterRoute(nameof(SentimentDetailsPage), typeof(SentimentDetailsPage));
             Routing.RegisterRoute(nameof(FearAndGreedPage), typeof(FearAndGreedPage));
             Routing.RegisterRoute(nameof(UserDetailsPage), typeof(UserDetailsPage));
-            
-            // Register these as strings to match your FloatingNavBar GoToAsync calls
-            //Routing.RegisterRoute("WhaleTrackerPage", typeof(WhaleTrackerPage));
+
+            // שוחרר מחסימה: רישום הראוטים עבור הניווט מהדאשבורד ומהתפריט הצף
+            Routing.RegisterRoute("WhaleTrackerPage", typeof(WhaleTrackerPage));
+
+            // תוקן: רישום הראוט עבור עמוד פרטי ההעברה של הלווייתנים
+            Routing.RegisterRoute("TransactionDetailsPage", typeof(TransactionDetailsPage));
+
             //Routing.RegisterRoute("ChatAssistantPage", typeof(ChatAssistantPage));
         }
     }

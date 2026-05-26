@@ -41,10 +41,11 @@ namespace MarketSentimentFinal
             builder.Services.AddTransient<ViewNewsPage>();
             builder.Services.AddTransient<NewsDetailsPage>();
 
-            // FIXED: Added registration for your new Sentiment Details screen layout
             builder.Services.AddTransient<SentimentDetailsPage>();
-
             builder.Services.AddTransient<FearAndGreedPage>();
+
+            // תוקן: רישום דף הלווייתנים
+            builder.Services.AddTransient<WhaleTrackerPage>();
 
             // --- רישום ה-ViewModels ---
             builder.Services.AddTransient<LoginViewModel>();
@@ -59,12 +60,13 @@ namespace MarketSentimentFinal
             builder.Services.AddTransient<ViewNewsViewModel>();
             builder.Services.AddTransient<NewsDetailsViewModel>();
 
-            // FIXED: Added registration for your new Sentiment Details backend controller
             builder.Services.AddTransient<SentimentDetailsViewModel>();
             builder.Services.AddTransient<FearAndGreedViewModel>();
 
+            // תוקן: רישום ה-ViewModel של הלווייתנים
+            builder.Services.AddTransient<WhaleTrackerViewModel>();
+
 #if DEBUG
-            // FIXED: Cleanly broken down out of the comment line string above so the debugger builds
             builder.Logging.AddDebug();
 #endif
 

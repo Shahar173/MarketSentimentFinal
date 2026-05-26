@@ -181,7 +181,7 @@
                     Stroke="#22FFFFFF"
                     StrokeShape="RoundRectangle 10">
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToChatAssistantCommand}" />
+                        <TapGestureRecognizer Command="{Binding ChatComingSoonCommand}" />
                     </Border.GestureRecognizers>
                     <VerticalStackLayout VerticalOptions="Center">
                         <Label
@@ -191,7 +191,7 @@
                             TextColor="White" />
                         <Label
                             FontSize="9"
-                            Text="AI Analyst"
+                            Text="Coming Soon"
                             TextColor="#94A3B8" />
                     </VerticalStackLayout>
                 </Border>

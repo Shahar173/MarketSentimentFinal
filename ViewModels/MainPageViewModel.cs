@@ -25,6 +25,7 @@ namespace MarketSentimentFinal.ViewModels
         public ICommand GoToWhaleTrackerCommand { get; }
         public ICommand GoToAccountCommand { get; }
         public ICommand LogoutCommand { get; }
+        public ICommand ChatComingSoonCommand { get; }
 
         // Dashboard Data
         private string _moodScore = "68";
@@ -74,6 +75,8 @@ namespace MarketSentimentFinal.ViewModels
             GoToWhaleTrackerCommand = new Command(async () => await Shell.Current.GoToAsync("WhaleTrackerPage"));
             GoToAccountCommand = new Command(async () => await Shell.Current.GoToAsync("UserDetailsPage"));
             LogoutCommand = new Command(OnLogout);
+            ChatComingSoonCommand = new Command(async () =>
+    await Shell.Current.DisplayAlert("AI Analyst", "Coming soon! We're working on it.", "OK"));
 
             UpdateKnobPosition(); // Initial calculation
             _ = LoadFearAndGreedDataAsync();

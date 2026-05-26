@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MarketSentimentFinal.Views.TransactionDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
+    Title="Transaction Details"
+    x:DataType="vm:TransactionDetailsViewModel"
+    BackgroundColor="#05070A"
+    Shell.NavBarIsVisible="False">
+
+    <Grid Padding="20,15,20,10" RowDefinitions="Auto, *, Auto">
+
+        <Grid
+            Grid.Row="0"
+            Margin="0,0,0,10"
+            ColumnDefinitions="Auto, *"
+            HeightRequest="50">
+            <Button
+                Grid.Column="0"
+                Padding="0"
+                BackgroundColor="#15FFFFFF"
+                Command="{Binding GoBackCommand}"
+                CornerRadius="22"
+                FontAttributes="Bold"
+                FontSize="20"
+                HeightRequest="44"
+                Text="←"
+                TextColor="White"
+                WidthRequest="44" />
+            <Label
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="Transaction Details"
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="18">
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#0F172A"
+                    Stroke="#10FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="26"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Transaction.FullAmountText}"
+                                    TextColor="White" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    Text="{Binding Transaction.Coin}"
+                                    TextColor="#EAB308" />
+                            </VerticalStackLayout>
+                            <Border
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="#20EAB308"
+                                StrokeShape="RoundRectangle 6"
+                                StrokeThickness="0"
+                                VerticalOptions="Start">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="9"
+                                    Text="WHALE MOVEMENT"
+                                    TextColor="#EAB308" />
+                            </Border>
+                        </Grid>
+
+                        <Label
+                            Margin="0,5,0,0"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="{Binding Transaction.AmountUSD, StringFormat='${0:N3}'}"
+                            TextColor="White" />
+                        <Label
+                            FontSize="12"
+                            Text="{Binding Transaction.TimeAgo}"
+                            TextColor="#64748B" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#0F172A"
+                    Stroke="#10FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="16">
+                        <Label
+                            CharacterSpacing="0.5"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="Transaction Flow"
+                            TextColor="#64748B" />
+
+                        <VerticalStackLayout Spacing="6">
+                            <HorizontalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="FROM"
+                                    TextColor="#64748B"
+                                    VerticalOptions="Center" />
+                                <Border
+                                    Padding="5,2"
+                                    BackgroundColor="#15FFFFFF"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="8"
+                                        Text="WALLET"
+                                        TextColor="#94A3B8" />
+                                </Border>
+                            </HorizontalStackLayout>
+                            <Grid
+                                ColumnDefinitions="*, Auto, Auto"
+                                ColumnSpacing="8"
+                                VerticalOptions="Center">
+                                <VerticalStackLayout
+                                    Grid.Column="0"
+                                    Spacing="2"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        Text="{Binding Transaction.FromAddress}"
+                                        TextColor="White" />
+                                    <Label
+                                        FontSize="11"
+                                        LineBreakMode="MiddleTruncation"
+                                        Text="{Binding Transaction.FromAddressHash}"
+                                        TextColor="#64748B" />
+                                </VerticalStackLayout>
+
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="12,6"
+                                    BackgroundColor="#15FFFFFF"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CopyTextCommand}" CommandParameter="{Binding Transaction.FromAddressHash}" />
+                                    </Border.GestureRecognizers>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="11"
+                                        HorizontalOptions="Center"
+                                        Text="Copy"
+                                        TextColor="#94A3B8"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <Border
+                                    Grid.Column="2"
+                                    Padding="12,6"
+                                    BackgroundColor="#15FFFFFF"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="11"
+                                        HorizontalOptions="Center"
+                                        Text="Portfolio"
+                                        TextColor="#94A3B8"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <Label
+                            Margin="0,2"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="↓"
+                            TextColor="#64748B" />
+
+                        <VerticalStackLayout Spacing="6">
+                            <HorizontalStackLayout Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="TO"
+                                    TextColor="#64748B"
+                                    VerticalOptions="Center" />
+                                <Border
+                                    Padding="5,2"
+                                    BackgroundColor="#15FFFFFF"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="8"
+                                        Text="WALLET"
+                                        TextColor="#94A3B8" />
+                                </Border>
+                            </HorizontalStackLayout>
+                            <Grid
+                                ColumnDefinitions="*, Auto, Auto"
+                                ColumnSpacing="8"
+                                VerticalOptions="Center">
+                                <VerticalStackLayout
+                                    Grid.Column="0"
+                                    Spacing="2"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        Text="{Binding Transaction.ToAddress}"
+                                        TextColor="White" />
+                                    <Label
+                                        FontSize="11"
+                                        LineBreakMode="MiddleTruncation"
+                                        Text="{Binding Transaction.ToAddressHash}"
+                                        TextColor="#64748B" />
+                                </VerticalStackLayout>
+
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="12,6"
+                                    BackgroundColor="#15FFFFFF"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CopyTextCommand}" CommandParameter="{Binding Transaction.ToAddressHash}" />
+                                    </Border.GestureRecognizers>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="11"
+                                        HorizontalOptions="Center"
+                                        Text="Copy"
+                                        TextColor="#94A3B8"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <Border
+                                    Grid.Column="2"
+                                    Padding="12,6"
+                                    BackgroundColor="#15FFFFFF"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="11"
+                                        HorizontalOptions="Center"
+                                        Text="Portfolio"
+                                        TextColor="#94A3B8"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#0F172A"
+                    Stroke="#10FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="12">
+                        <Label
+                            CharacterSpacing="0.5"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="Copy Trade"
+                            TextColor="#64748B" />
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                            <Border
+                                Grid.Column="0"
+                                Padding="12"
+                                BackgroundColor="#08FFFFFF"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        HorizontalOptions="Center"
+                                        Text="View Sender"
+                                        TextColor="#3399FF" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        HorizontalOptions="Center"
+                                        Text="Portfolio"
+                                        TextColor="#3399FF" />
+                                    <Label
+                                        FontSize="10"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="MiddleTruncation"
+                                        Text="{Binding Transaction.FromAddressHash}"
+                                        TextColor="#64748B" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border
+                                Grid.Column="1"
+                                Padding="12"
+                                BackgroundColor="#08FFFFFF"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        HorizontalOptions="Center"
+                                        Text="View Receiver"
+                                        TextColor="#00E676" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        HorizontalOptions="Center"
+                                        Text="Portfolio"
+                                        TextColor="#00E676" />
+                                    <Label
+                                        FontSize="10"
+                                        HorizontalOptions="Center"
+                                        LineBreakMode="MiddleTruncation"
+                                        Text="{Binding Transaction.ToAddressHash}"
+                                        TextColor="#64748B" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#0F172A"
+                    Stroke="#10FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="10">
+                        <Label
+                            CharacterSpacing="0.5"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="Transaction Hash"
+                            TextColor="#64748B" />
+                        <Border
+                            Padding="12"
+                            BackgroundColor="#05070A"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="0">
+                            <Label
+                                FontSize="11"
+                                LineBreakMode="CharacterWrap"
+                                Text="{Binding Transaction.TransactionHash}"
+                                TextColor="#94A3B8" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

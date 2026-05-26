@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
 namespace MarketSentimentFinal.Views.Components
@@ -26,32 +25,43 @@ namespace MarketSentimentFinal.Views.Components
 
         private async void OnHomeClicked(object sender, EventArgs e)
         {
-            // Use // to force a fresh "Slide In" transition
             await Shell.Current.GoToAsync("//MainPage");
         }
 
         private async void OnNewsClicked(object sender, EventArgs e)
         {
-            // Use // for navigation between main modules
             await Shell.Current.GoToAsync("//ViewNewsPage");
         }
 
         private async void OnAccountClicked(object sender, EventArgs e)
         {
-            // Use // for navigation between main modules
             await Shell.Current.GoToAsync("//UserDetailsPage");
         }
 
         private async void OnWhaleTrackerClicked(object sender, EventArgs e)
         {
-            try { await Shell.Current.GoToAsync("//WhaleTrackerPage"); }
-            catch { await Shell.Current.DisplayAlert("Coming Soon", "Whale Tracker page is not created yet.", "OK"); }
+            try
+            {
+                await Shell.Current.GoToAsync("WhaleTrackerPage");
+            }
+            catch
+            {
+                await Shell.Current.DisplayAlert("Coming Soon", "Whale Tracker page is not created yet.", "OK");
+            }
         }
 
-        private async void OnChatAssistantClicked(object sender, EventArgs e)
+        private async void OnChatClicked(object sender, EventArgs e)
         {
-            try { await Shell.Current.GoToAsync("//ChatAssistantPage"); }
-            catch { await Shell.Current.DisplayAlert("Coming Soon", "AI Chat Assistant page is not created yet.", "OK"); }
+            try
+            {
+                // ניסיון לנווט לדף (ברגע שתבנה אותו, זה פשוט יעבוד)
+                await Shell.Current.GoToAsync("ChatAssistantPage");
+            }
+            catch
+            {
+                // אם הדף עדיין לא קיים, המשתמש יקבל את ההתראה
+                await Shell.Current.DisplayAlert("Coming Soon", "AI Chat Assistant page is not created yet.", "OK");
+            }
         }
     }
 }
