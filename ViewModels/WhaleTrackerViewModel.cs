@@ -141,7 +141,7 @@ namespace MarketSentimentFinal.ViewModels
                                 Coin = item.TryGetProperty("ticker", out var tk) ? tk.GetString() : "BTC",
                                 FromAddress = item.TryGetProperty("from_address", out var fr) ? fr.GetString() : "Unknown",
                                 ToAddress = item.TryGetProperty("to_address", out var to) ? to.GetString() : "Unknown",
-                                TimeAgo = item.TryGetProperty("date", out var dt) ? dt.GetString() : "Recent",
+                                TimeAgo = item.TryGetProperty("date", out var dt) ? ConvertToIsraelTime(dt.GetString()) : "Recent",
                                 AmountText = amount >= 1000000 ? $"${(amount / 1000000):F1}M" : $"${(amount / 1000):F0}K",
                                 TransactionType = direction
                             });
@@ -173,6 +173,20 @@ namespace MarketSentimentFinal.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        private string ConvertToIsraelTime(string rawDate)
+        {
+            // מנסה להפוך את המחרוזת לזמן
+            if (DateTime.TryParse(rawDate, out DateTime dateValue))
+            {
+                // מוסיף 3 שעות עבור שעון ישראל (כי השרת ב-UTC)
+                var israelTime = dateValue.AddHours(3);
+                return israelTime.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+
+            // אם לא הצליח לפרסר, מחזיר מה שיש (לפחות לא יקרוס)
+            return rawDate;
         }
 
         private void CalculateWhaleSentiment(List<WhaleTransaction> list)

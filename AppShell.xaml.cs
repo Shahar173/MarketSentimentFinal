@@ -9,9 +9,9 @@ namespace MarketSentimentFinal
         public AppShell(AppShellViewModel viewModel)
         {
             InitializeComponent();
-            BindingContext = viewModel;
+            BindingContext = viewModel; // חיבור ה-ViewModel ל-Shell לצורך לוגיקת תפריטים וניווט
 
-            // Route registrations
+            // קבוצה 1: רישום דפי האפליקציה ב-Routing (מאפשר ניווט אליהם מכל מקום ע"י שם)
             Routing.RegisterRoute(nameof(SignUpPage), typeof(SignUpPage));
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             Routing.RegisterRoute(nameof(ViewNewsPage), typeof(ViewNewsPage));
@@ -20,13 +20,9 @@ namespace MarketSentimentFinal
             Routing.RegisterRoute(nameof(FearAndGreedPage), typeof(FearAndGreedPage));
             Routing.RegisterRoute(nameof(UserDetailsPage), typeof(UserDetailsPage));
 
-            // שוחרר מחסימה: רישום הראוטים עבור הניווט מהדאשבורד ומהתפריט הצף
+            // קבוצה 2: רישום ידני של דפים נוספים (עבור ניווט דינמי מתוך התפריט הצף והדאשבורד)
             Routing.RegisterRoute("WhaleTrackerPage", typeof(WhaleTrackerPage));
-
-            // תוקן: רישום הראוט עבור עמוד פרטי ההעברה של הלווייתנים
             Routing.RegisterRoute("TransactionDetailsPage", typeof(TransactionDetailsPage));
-
-            //Routing.RegisterRoute("ChatAssistantPage", typeof(ChatAssistantPage));
         }
     }
 }

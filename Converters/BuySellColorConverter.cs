@@ -1,21 +1,21 @@
 ﻿using System.Globalization;
 using Microsoft.Maui.Controls;
 
-namespace MarketSentimentFinal.Converters // זה ה-Namespace המדויק
+namespace MarketSentimentFinal.Converters
 {
     public class BuySellColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // אם הערך הוא מחרוזת (ה-DisplayType שהגדרנו)
+            // בדיקת התאמה עבור ערך מסוג מחרוזת והחזרת צבע לפי סוג הפעולה
             if (value is string type)
             {
-                if (type == "BUY") return Color.FromArgb("#22C55E"); // ירוק
-                if (type == "SELL") return Color.FromArgb("#EF4444"); // אדום
-                return Color.FromArgb("#EAB308"); // צהוב ל-WHALE MOVEMENT
+                if (type == "BUY") return Color.FromArgb("#22C55E"); // ירוק לפעולת קנייה
+                if (type == "SELL") return Color.FromArgb("#EF4444"); // אדום לפעולת מכירה
+                return Color.FromArgb("#EAB308"); // צהוב לפעולות כלליות של תנועת לווייתנים
             }
 
-            // fallback לבדיקה בוליאנית (אם במקרה נשלח bool)
+            // בדיקת גיבוי למקרה שהערך התקבל כמשתנה בוליאני
             if (value is bool isBuy && isBuy) return Color.FromArgb("#22C55E");
             return Color.FromArgb("#EF4444");
         }

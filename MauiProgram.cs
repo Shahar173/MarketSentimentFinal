@@ -23,31 +23,34 @@ namespace MarketSentimentFinal
                 });
 
             // --- רישום ה-Services ---
+            // רישום שירותים (Services) להזרקת תלויות (DI) - הופך את הלוגיקה לניתנת לשימוש חוזר בכל האפליקציה
             builder.Services.AddSingleton<IAppLogger, LogService>();
             builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
             builder.Services.AddSingleton<IAppUserRepository, FirebaseUsersRepository>();
             builder.Services.AddSingleton<INewsService, CryptoNewsService>();
 
             // --- רישום ה-Views ---
+            // רישום דפי ה-UI (Views) - Transient ליצירה מחדש בכל כניסה, Singleton למסכים מרכזיים שנשארים בזיכרון
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SignUpPage>();
+
             builder.Services.AddTransient<UserDetailsPage>();
             builder.Services.AddTransient<AdminPage>();
+
             builder.Services.AddTransient<UsersListPage>();
             builder.Services.AddSingleton<MainPage>();
+
             builder.Services.AddSingleton<AppShell>();
-
-            // News page layouts
             builder.Services.AddTransient<ViewNewsPage>();
+
             builder.Services.AddTransient<NewsDetailsPage>();
-
             builder.Services.AddTransient<SentimentDetailsPage>();
-            builder.Services.AddTransient<FearAndGreedPage>();
 
-            // תוקן: רישום דף הלווייתנים
+            builder.Services.AddTransient<FearAndGreedPage>();
             builder.Services.AddTransient<WhaleTrackerPage>();
 
             // --- רישום ה-ViewModels ---
+            // רישום שכבת הלוגיקה (ViewModels) - מקשר בין הנתונים לבין ה-UI לפי עקרון ה-MVVM
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<SignUpViewModel>();
             builder.Services.AddTransient<UserDetailsPageViewModel>();
@@ -67,6 +70,7 @@ namespace MarketSentimentFinal
             builder.Services.AddTransient<WhaleTrackerViewModel>();
 
 #if DEBUG
+            // הפעלת לוגים (Logging) לצורכי ניפוי שגיאות רק במצב פיתוח (Debug)
             builder.Logging.AddDebug();
 #endif
 

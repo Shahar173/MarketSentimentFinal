@@ -2,9 +2,9 @@
 
 namespace MarketSentimentFinal.Services
 {
+    // ממשק המגדיר חוזה עבודה לכל מחלקה שמטפלת במשיכת חדשות מהרשת
     public interface INewsService
     {
-        // This will fetch the latest news and return our list of models
         Task<List<NewsArticle>> GetCryptoNewsAsync();
     }
 }

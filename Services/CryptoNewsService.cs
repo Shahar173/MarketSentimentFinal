@@ -7,7 +7,7 @@ namespace MarketSentimentFinal.Services
     {
         private readonly HttpClient _httpClient;
 
-        // שים כאן את ה-Token שלך מחדש
+        // קבוצה 1: הגדרות התחברות (HttpClient ו-API Token)
         private readonly string _apiKey = "2ke2ezrpzznixlsh44l96dl5ivrxcfl31lhubxwd";
 
         public CryptoNewsService()
@@ -16,6 +16,7 @@ namespace MarketSentimentFinal.Services
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
         }
 
+        // קבוצה 2: לוגיקת המשיכה והעיבוד מה-API
         public async Task<List<NewsArticle>> GetCryptoNewsAsync()
         {
             var articles = new List<NewsArticle>();
@@ -43,8 +44,6 @@ namespace MarketSentimentFinal.Services
                                 "NEGATIVE" => "BEARISH",
                                 _ => "NEUTRAL"
                             };
-
-                            // קריאת התאריך הגולמי והמרתו לזמן ישראל נקי
                             string rawDate = item.TryGetProperty("date", out var p) ? p.GetString() : "Just now";
                             string israelFormattedDate = ConvertToIsraelTime(rawDate);
 
@@ -55,7 +54,6 @@ namespace MarketSentimentFinal.Services
                                 Source = item.TryGetProperty("source_name", out var src) ? src.GetString() : "Crypto News",
                                 ArticleUrl = item.TryGetProperty("url", out var l) ? l.GetString() : "",
 
-                                // השמת התאריך המומר והנקי
                                 PublishedAt = israelFormattedDate,
 
                                 Sentiment = sentiment,
@@ -82,7 +80,7 @@ namespace MarketSentimentFinal.Services
             return articles;
         }
 
-        // מתודת עזר שממירה לזמן ישראל ומעיפה את ה-Offset (-0400)
+        // קבוצה 3: מתודות עזר (המרה לזמן ישראל, צבעים וניקוי טקסט)
         private string ConvertToIsraelTime(string rawDate)
         {
             if (DateTimeOffset.TryParse(rawDate, out var dateTimeOffset))
@@ -90,27 +88,22 @@ namespace MarketSentimentFinal.Services
                 TimeZoneInfo israelZone;
                 try
                 {
-                    // תואם ל-Android / iOS / Mac
                     israelZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Jerusalem");
                 }
                 catch
                 {
                     try
                     {
-                        // תואם ל-Windows (במידה ומריצים על Windows Machine בלבד)
                         israelZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
                     }
                     catch
                     {
-                        // פולבק למזמן המקומי של המכשיר
                         israelZone = TimeZoneInfo.Local;
                     }
                 }
 
-                // המרה לזמן ישראל
                 var israelTime = TimeZoneInfo.ConvertTime(dateTimeOffset, israelZone);
 
-                // עיצוב מחדש ללא ה-Offset בסוף
                 return israelTime.ToString("ddd, dd MMM yyyy HH:mm:ss");
             }
 
