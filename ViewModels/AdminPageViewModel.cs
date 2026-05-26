@@ -10,7 +10,7 @@ namespace MarketSentimentFinal.ViewModels
         {
             // התיקון: ניווט יחסי (בלי //) כדי שה-Shell ימצא את ה-Route הרשום
             ViewUsersCommand = new Command(async () =>
-                await Shell.Current.GoToAsync("UsersListPage"));
+    await Shell.Current.GoToAsync("//UsersListPage"));
         }
     }
 }

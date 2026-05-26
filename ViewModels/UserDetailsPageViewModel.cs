@@ -1,6 +1,10 @@
 ﻿using MarketSentimentFinal.Models;
-using MarketSentimentFinal.Services; // כאן נמצא ה-Interface המעודכן
+using MarketSentimentFinal.Services;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Maui.Controls;
 
 namespace MarketSentimentFinal.ViewModels
 {
@@ -22,12 +26,14 @@ namespace MarketSentimentFinal.ViewModels
 
         public ICommand UpdateCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand LogoutCommand { get; } // פקודה חדשה עבור התנתקות
 
         public UserDetailsPageViewModel(IAppUserRepository userRepo)
         {
             _userRepo = userRepo;
             UpdateCommand = new Command(async () => await OnUpdate());
             DeleteCommand = new Command(async () => await OnDelete());
+            LogoutCommand = new Command(async () => await OnLogout()); // קישור הפקודה
 
             LoadCurrentUser();
         }
@@ -64,16 +70,12 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (_selectedUser == null || _userRepo == null) return;
 
-            // 1. עדכון האובייקט המקומי
             _selectedUser.FirstName = FirstName ?? string.Empty;
             _selectedUser.LastName = LastName ?? string.Empty;
             _selectedUser.Mobile = Mobile ?? string.Empty;
 
-            // 2. שמירה ב-Firebase (אסינכרוני)
             await _userRepo.UpdateAsync(_selectedUser);
 
-            // --- התיקון הקריטי: עדכון המשתמש הגלובלי בתוך האפליקציה ---
-            // בלי זה, שאר המסכים ימשיכו להראות את השם הישן עד שתעשה Login מחדש
             var app = App.Current as App;
             if (app != null && app.CurrentUser != null && app.CurrentUser.Email == _selectedUser.Email)
             {
@@ -93,7 +95,6 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (_selectedUser == null || _userRepo == null) return;
 
-            // אישור מחיקה מהמשתמש
             bool confirmed = await Shell.Current.DisplayAlert("Delete Account",
                 $"Are you sure you want to delete {FirstName}?", "Yes", "No");
 
@@ -101,18 +102,38 @@ namespace MarketSentimentFinal.ViewModels
 
             try
             {
-                // קריאה למימוש החדש ב-Repository
                 await _userRepo.DeleteAsync(_selectedUser);
-
                 await Shell.Current.DisplayAlert("Deleted", "User has been removed.", "OK");
-
-                // ניווט מוחלט חזרה לדף הראשי (או לדף הבית של האדמין)
                 await Shell.Current.GoToAsync("//MainPage");
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error", "Could not delete user. Try again.", "OK");
             }
+        }
+
+        private async Task OnLogout()
+        {
+            // בקשת אישור יציאה מהמשתמש
+            bool confirmed = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
+            if (!confirmed) return;
+
+            // 1. ניקוי אובייקט המשתמש השמור בזיכרון האפליקציה
+            if (App.Current is App mainApp)
+            {
+                mainApp.CurrentUser = null;
+            }
+
+            // 2. החזרת דף הבית למסך ה-LoginPage המקורי (שבירת ה-Shell הנוכחי למען בטיחות)
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var loginPage = IPlatformApplication.Current?.Services.GetService<Views.LoginPage>();
+                if (loginPage != null)
+                {
+                    // אנחנו שמים את ה-LoginPage בתוך NavigationPage כדי שיוכל לעבור בהמשך ל-SignUp
+                    Application.Current.MainPage = new NavigationPage(loginPage);
+                }
+            });
         }
     }
 }

@@ -14,14 +14,15 @@
     </ContentView.Resources>
 
     <Border
-        Margin="30,0,30,15"
+        Margin="20,0,20,15"
         BackgroundColor="#121622"
         HeightRequest="55"
         Stroke="#1E232F"
         StrokeShape="RoundRectangle 25"
         StrokeThickness="1"
         VerticalOptions="End">
-        <Grid Padding="10,0" ColumnDefinitions="*,*,*,*,*">
+
+        <Grid Padding="10,0" ColumnDefinitions="*,*,*,*,*,Auto">
 
             <VerticalStackLayout
                 Grid.Column="0"
@@ -115,6 +116,27 @@
                     HeightRequest="4"
                     HorizontalOptions="Center"
                     IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Account'}"
+                    WidthRequest="4" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout
+                x:Name="AdminTab"
+                Grid.Column="5"
+                Spacing="2"
+                VerticalOptions="Center"
+                WidthRequest="45">
+                <Button
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Clicked="OnAdminClicked"
+                    FontSize="18"
+                    HeightRequest="30"
+                    Text="🔐" />
+                <Ellipse
+                    Fill="#EF4444"
+                    HeightRequest="4"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding ActivePage, Source={x:Reference this}, Converter={StaticResource PageMatchConverter}, ConverterParameter='Admin'}"
                     WidthRequest="4" />
             </VerticalStackLayout>
 

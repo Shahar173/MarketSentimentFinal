@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
+using MarketSentimentFinal.ViewModels.News; // חובה כדי להכיר את ViewNewsViewModel
 
 namespace MarketSentimentFinal.ViewModels
 {
@@ -28,7 +29,7 @@ namespace MarketSentimentFinal.ViewModels
         public ICommand ChatComingSoonCommand { get; }
 
         // Dashboard Data
-        private string _moodScore = "68";
+        private string _moodScore = "50"; // ברירת מחדל ניטרלית
         public string MoodScore
         {
             get => _moodScore;
@@ -40,7 +41,6 @@ namespace MarketSentimentFinal.ViewModels
             }
         }
 
-        // ADDED: Knob Position Property
         private double _indicatorPosition;
         public double IndicatorPosition
         {
@@ -48,13 +48,13 @@ namespace MarketSentimentFinal.ViewModels
             set { _indicatorPosition = value; OnPropertyChanged(); }
         }
 
-        private string _moodStatusText = "OPTIMISM";
+        private string _moodStatusText = "NEUTRAL SENTIMENT";
         public string MoodStatusText { get => _moodStatusText; set { _moodStatusText = value; OnPropertyChanged(); } }
 
-        private string _whaleBuyPercent = "61%";
+        private string _whaleBuyPercent = "50% Buy";
         public string WhaleBuyPercent { get => _whaleBuyPercent; set { _whaleBuyPercent = value; OnPropertyChanged(); } }
 
-        private string _whaleSellPercent = "39%";
+        private string _whaleSellPercent = "50% Sell";
         public string WhaleSellPercent { get => _whaleSellPercent; set { _whaleSellPercent = value; OnPropertyChanged(); } }
 
         private string _fearGreedValue = "--";
@@ -76,20 +76,45 @@ namespace MarketSentimentFinal.ViewModels
             GoToAccountCommand = new Command(async () => await Shell.Current.GoToAsync("UserDetailsPage"));
             LogoutCommand = new Command(OnLogout);
             ChatComingSoonCommand = new Command(async () =>
-    await Shell.Current.DisplayAlert("AI Analyst", "Coming soon! We're working on it.", "OK"));
+                await Shell.Current.DisplayAlert("AI Analyst", "Coming soon! We're working on it.", "OK"));
 
-            UpdateKnobPosition(); // Initial calculation
+            // טעינה ראשונית של כל הנתונים הסטטיים מהזיכרון
+            LoadDashboardData();
             _ = LoadFearAndGreedDataAsync();
         }
 
-        // Logic to calculate position based on width of your bar
-        // If your bar is roughly 330px wide, this math works:
+        // מתודה משולבת: מושכת חדשות לחלק העליון ולווייתנים לחלק התחתון
+        public void LoadDashboardData()
+        {
+            // 1. קבלת ציון החדשות (Fundamental Sentiment) לחלק העליון של המסך
+            int newsScore = ViewNewsViewModel.SharedNewsScore;
+            MoodScore = newsScore.ToString();
+
+            // עדכון המלל הראשי לפי ציון סנטימנט החדשות
+            if (newsScore >= 65) MoodStatusText = "BULLISH OPTIMISM";
+            else if (newsScore >= 45) MoodStatusText = "NEUTRAL SENTIMENT";
+            else MoodStatusText = "BEARISH FEAR";
+
+            // עדכון מיקום המחוג על פי הציון של החדשות
+            UpdateKnobPosition();
+
+            // 2. קבלת אחוזי הלווייתנים (On-Chain Data) לחלק התחתון של המסך
+            WhaleBuyPercent = WhaleTrackerViewModel.SharedBuyPercent;
+            WhaleSellPercent = WhaleTrackerViewModel.SharedSellPercent;
+        }
+
         private void UpdateKnobPosition()
         {
             if (double.TryParse(MoodScore, out double score))
             {
-                // Range 0-100 mapped to 0-330px
-                IndicatorPosition = (score / 100.0) * 330;
+                // 1. נגדיר את אורך הקו הריאלי שרואים במסך (בערך 295 פיקסלים)
+                double totalWidth = 295;
+
+                // 2. נוריד את קוטר העיגול (12 פיקסלים) כדי שכשהציון הוא 100 העיגול יעצר בדיוק בקצה הקו ולא יחרוג ממנו
+                double maxTranslation = totalWidth - 12;
+
+                // 3. נחשב את המיקום וננעל אותו בין 0 למקסימום החדש
+                IndicatorPosition = Math.Clamp((score / 100.0) * maxTranslation, 0, maxTranslation);
             }
         }
 
@@ -105,7 +130,12 @@ namespace MarketSentimentFinal.ViewModels
                     if (int.TryParse(latest.Value, out int score)) EvaluateFearGreedColor(score);
                 }
             }
-            catch { FearGreedValue = "50"; FearGreedStatus = "NEUTRAL"; FearGreedColor = Color.FromArgb("#B0BEC5"); }
+            catch
+            {
+                FearGreedValue = "50";
+                FearGreedStatus = "NEUTRAL";
+                FearGreedColor = Color.FromArgb("#B0BEC5");
+            }
         }
 
         private void EvaluateFearGreedColor(int numericScore)

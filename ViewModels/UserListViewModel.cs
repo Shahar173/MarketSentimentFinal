@@ -1,7 +1,12 @@
 ﻿using MarketSentimentFinal.Models;
 using MarketSentimentFinal.Services;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Maui.Controls;
 
 namespace MarketSentimentFinal.ViewModels
 {
@@ -28,12 +33,12 @@ namespace MarketSentimentFinal.ViewModels
             SearchCommand = new Command(OnSearch);
             ClearFilterCommand = new Command(ClearFilter);
             UserDetailsPageCommand = new Command<AppUser>(GoToAccountPage);
+
             _ = LoadAllUsers();
         }
 
         public async Task LoadAllUsers()
         {
-            // עכשיו זה יעבוד כי הפונקציה ב-Interface היא Task
             var usersFromDb = await _userRepo.GetAllAsync();
 
             if (usersFromDb != null)
@@ -68,7 +73,9 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (user == null) return;
             var param = new Dictionary<string, object> { { "selectedUser", user } };
-            await Shell.Current.GoToAsync("UserDetailsPage", param);
+
+            // שימוש בנתיב ניווט מלא ומפורש ב-Shell כדי למנוע קריסות של Stack ריק
+            await Shell.Current.GoToAsync("//UserDetailsPage", param);
         }
     }
 }

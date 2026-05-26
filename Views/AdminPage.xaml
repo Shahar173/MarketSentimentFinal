@@ -3,63 +3,116 @@
     x:Class="MarketSentimentFinal.Views.AdminPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:components="clr-namespace:MarketSentimentFinal.Views.Components"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     x:DataType="vm:AdminPageViewModel"
     ClassId="AdminPage"
-    NavigationPage.HasNavigationBar="False">
+    Shell.NavBarIsVisible="False">
 
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0.0" Color="#0F2027" />
-            <GradientStop Offset="0.5" Color="#203A43" />
-            <GradientStop Offset="1.0" Color="#2C5364" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
+    <Grid BackgroundColor="#05070A">
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="End"
+            TranslationX="150"
+            TranslationY="-150"
+            VerticalOptions="Start"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-    <VerticalStackLayout Padding="24,60,24,40" Spacing="30">
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="Start"
+            TranslationX="-150"
+            TranslationY="150"
+            VerticalOptions="End"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-        <VerticalStackLayout Spacing="8">
+        <Grid Padding="20,15,20,0" RowDefinitions="Auto, Auto, *, Auto">
+
+            <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center">
+                <Image
+                    HeightRequest="40"
+                    Source="market_mood_logo.png"
+                    WidthRequest="40">
+                    <Image.Clip>
+                        <EllipseGeometry
+                            Center="20,20"
+                            RadiusX="20"
+                            RadiusY="20" />
+                    </Image.Clip>
+                </Image>
+            </VerticalStackLayout>
+
             <Label
+                Grid.Row="1"
+                Margin="0,15,0,15"
                 CharacterSpacing="2"
                 FontAttributes="Bold"
-                FontSize="28"
+                FontSize="24"
                 HorizontalOptions="Center"
                 Text="ADMIN PANEL"
                 TextColor="White" />
 
-            <BoxView
-                BackgroundColor="#00B4DB"
-                HeightRequest="2"
-                HorizontalOptions="Center"
-                WidthRequest="60" />
-        </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Row="2"
+                Spacing="20"
+                VerticalOptions="Center">
+                <Border
+                    Padding="25"
+                    BackgroundColor="#0F172A"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 16">
 
-        <Border
-            Padding="24"
-            BackgroundColor="#22FFFFFF"
-            Stroke="#44FFFFFF"
-            StrokeShape="RoundRectangle 15"
-            StrokeThickness="1">
+                    <VerticalStackLayout Spacing="25">
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="Security &amp; Management"
+                                TextColor="White" />
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center"
+                                Text="Manage application users and security credentials"
+                                TextColor="#64748B" />
+                        </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="20">
-                <Label
-                    FontSize="16"
-                    HorizontalOptions="Center"
-                    Text="Manage application users and security"
-                    TextColor="#BBFFFFFF" />
-
-                <Button
-                    BackgroundColor="#00B4DB"
-                    Command="{Binding ViewUsersCommand}"
-                    CornerRadius="12"
-                    FontAttributes="Bold"
-                    FontSize="18"
-                    HeightRequest="60"
-                    HorizontalOptions="Fill"
-                    Text="View Users List"
-                    TextColor="White" />
+                        <Button
+                            BackgroundColor="#1E3A8A"
+                            CharacterSpacing="1"
+                            Command="{Binding ViewUsersCommand}"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            HeightRequest="52"
+                            Text="VIEW USERS LIST"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
-        </Border>
 
-    </VerticalStackLayout>
+            <components:FloatingNavBar
+                Grid.Row="3"
+                Margin="0,0,0,10"
+                ActivePage="Admin"
+                VerticalOptions="End" />
+        </Grid>
+    </Grid>
 </ContentPage>

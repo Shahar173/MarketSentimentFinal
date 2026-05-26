@@ -8,7 +8,7 @@ namespace MarketSentimentFinal.Services
         private readonly HttpClient _httpClient;
 
         // שים כאן את ה-Token שלך מחדש
-        private readonly string _apiKey = "gkopxmnvmemwzjwkj2ldyqqzarvxbqfukdaartjm";
+        private readonly string _apiKey = "2ke2ezrpzznixlsh44l96dl5ivrxcfl31lhubxwd";
 
         public CryptoNewsService()
         {

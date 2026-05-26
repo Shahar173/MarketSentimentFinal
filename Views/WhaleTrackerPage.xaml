@@ -4,11 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:components="clr-namespace:MarketSentimentFinal.Views.Components"
+    xmlns:converters="clr-namespace:MarketSentimentFinal.Converters"
     xmlns:models="clr-namespace:MarketSentimentFinal.Models"
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     Title="Whale Tracker"
     x:DataType="vm:WhaleTrackerViewModel"
     Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BuySellColorConverter x:Key="BuySellColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid BackgroundColor="#05070A">
         <!--  אפקט גרדיאנט רקע עליון (ימין)  -->
@@ -259,11 +266,12 @@
                                                     BackgroundColor="#15FFFFFF"
                                                     StrokeShape="RoundRectangle 6"
                                                     StrokeThickness="0">
+
                                                     <Label
                                                         FontAttributes="Bold"
                                                         FontSize="9"
-                                                        Text="WHALE MOVEMENT"
-                                                        TextColor="#EAB308" />
+                                                        Text="{Binding DisplayType}"
+                                                        TextColor="{Binding DisplayType, Converter={StaticResource BuySellColorConverter}}" />
                                                 </Border>
                                             </Grid>
 

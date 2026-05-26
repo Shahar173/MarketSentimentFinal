@@ -6,131 +6,177 @@
     xmlns:vm="clr-namespace:MarketSentimentFinal.ViewModels"
     Title="Create Account"
     x:DataType="vm:SignUpViewModel"
-    BackgroundColor="#121212"
+    BackgroundColor="#05070A"
     NavigationPage.HasNavigationBar="False"
     Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30"
-            Spacing="15"
-            VerticalOptions="Center">
+    <Grid>
+        <!--  אפקט גרדיאנט רקע עליון (ימין)  -->
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="End"
+            TranslationX="150"
+            TranslationY="-150"
+            VerticalOptions="Start"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-            <Label
-                FontAttributes="Bold"
-                FontSize="32"
-                HorizontalOptions="Center"
-                Text="New Account"
-                TextColor="#512BD4" />
+        <!--  אפקט גרדיאנט רקע תחתון (שמאל)  -->
+        <BoxView
+            CornerRadius="200"
+            HeightRequest="400"
+            HorizontalOptions="Start"
+            TranslationX="-150"
+            TranslationY="150"
+            VerticalOptions="End"
+            WidthRequest="400">
+            <BoxView.Background>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0.0" Color="#1E3A8A" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-            <Label
-                Margin="0,0,0,15"
-                HorizontalOptions="Center"
-                Text="Join our trading community"
-                TextColor="Gray" />
+        <ScrollView VerticalOptions="Center">
+            <VerticalStackLayout Padding="30" Spacing="15">
 
-            <Border
-                Padding="10,0"
-                BackgroundColor="#1E1E1E"
-                HeightRequest="50"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="0">
-                <Entry
-                    Placeholder="First Name"
-                    PlaceholderColor="Gray"
-                    Text="{Binding FirstName}"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Border>
+                <VerticalStackLayout
+                    Margin="0,0,0,10"
+                    HorizontalOptions="Center"
+                    Spacing="4">
+                    <Label
+                        CharacterSpacing="1.5"
+                        FontAttributes="Bold"
+                        FontSize="26"
+                        HorizontalOptions="Center"
+                        Text="CREATE ACCOUNT"
+                        TextColor="White" />
+                    <Label
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Join our intelligent trading community"
+                        TextColor="#64748B" />
+                </VerticalStackLayout>
 
-            <Border
-                Padding="10,0"
-                BackgroundColor="#1E1E1E"
-                HeightRequest="50"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="0">
-                <Entry
-                    Placeholder="Last Name"
-                    PlaceholderColor="Gray"
-                    Text="{Binding LastName}"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Border>
+                <!--  שדות קלט במבנה Border מעוצב ואחיד  -->
+                <Border
+                    Padding="15,0"
+                    BackgroundColor="#0F172A"
+                    HeightRequest="50"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 12">
+                    <Entry
+                        Placeholder="First Name"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding FirstName}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
 
-            <Border
-                Padding="10,0"
-                BackgroundColor="#1E1E1E"
-                HeightRequest="50"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="0">
-                <Entry
-                    Keyboard="Email"
-                    Placeholder="Email Address"
-                    PlaceholderColor="Gray"
-                    Text="{Binding Email}"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Border>
+                <Border
+                    Padding="15,0"
+                    BackgroundColor="#0F172A"
+                    HeightRequest="50"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 12">
+                    <Entry
+                        Placeholder="Last Name"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding LastName}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
 
-            <Border
-                Padding="10,0"
-                BackgroundColor="#1E1E1E"
-                HeightRequest="50"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="0">
-                <Entry
-                    Keyboard="Telephone"
-                    Placeholder="Mobile Number"
-                    PlaceholderColor="Gray"
-                    Text="{Binding Mobile}"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Border>
+                <Border
+                    Padding="15,0"
+                    BackgroundColor="#0F172A"
+                    HeightRequest="50"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 12">
+                    <Entry
+                        Keyboard="Email"
+                        Placeholder="Email Address"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding Email}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
 
-            <Border
-                Padding="10,0"
-                BackgroundColor="#1E1E1E"
-                HeightRequest="50"
-                StrokeShape="RoundRectangle 10"
-                StrokeThickness="0">
-                <Entry
-                    IsPassword="True"
-                    Placeholder="Password"
-                    PlaceholderColor="Gray"
-                    Text="{Binding Password}"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Border>
+                <Border
+                    Padding="15,0"
+                    BackgroundColor="#0F172A"
+                    HeightRequest="50"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 12">
+                    <Entry
+                        Keyboard="Telephone"
+                        Placeholder="Mobile Number"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding Mobile}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
 
-            <Button
-                Margin="0,15,0,0"
-                BackgroundColor="#512BD4"
-                Command="{Binding SignUpCommand}"
-                CornerRadius="10"
-                FontAttributes="Bold"
-                HeightRequest="55"
-                Text="Sign Up"
-                TextColor="White" />
-            <Label
-                HorizontalOptions="Center"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding SignUpMessageVisible}"
-                Text="{Binding ErrorMessage}"
-                TextColor="#FF8A80" />
+                <Border
+                    Padding="15,0"
+                    BackgroundColor="#0F172A"
+                    HeightRequest="50"
+                    Stroke="#15FFFFFF"
+                    StrokeShape="RoundRectangle 12">
+                    <Entry
+                        IsPassword="True"
+                        Placeholder="Password"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding Password}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Border>
 
-            <Button
-                BackgroundColor="Transparent"
-                Command="{Binding BackToLoginCommand}"
-                HorizontalOptions="Center"
-                Text="Already have an account? Login"
-                TextColor="Gray" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="{Binding SignUpMessageVisible}"
+                    Text="{Binding ErrorMessage}"
+                    TextColor="#EF4444" />
 
-            <ActivityIndicator
-                HorizontalOptions="Center"
-                IsRunning="{Binding IsBusy}"
-                IsVisible="{Binding IsBusy}"
-                Color="#512BD4" />
+                <VerticalStackLayout Margin="0,10,0,0" Spacing="10">
+                    <Button
+                        BackgroundColor="#1E3A8A"
+                        CharacterSpacing="1"
+                        Command="{Binding SignUpCommand}"
+                        CornerRadius="12"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HeightRequest="52"
+                        Text="SIGN UP"
+                        TextColor="White" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <Button
+                        BackgroundColor="Transparent"
+                        Command="{Binding BackToLoginCommand}"
+                        FontSize="13"
+                        HorizontalOptions="Center"
+                        Text="Already have an account? Login"
+                        TextColor="#64748B" />
+                </VerticalStackLayout>
+
+                <ActivityIndicator
+                    HorizontalOptions="Center"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="#1E3A8A" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

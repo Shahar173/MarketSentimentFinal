@@ -23,6 +23,23 @@ namespace MarketSentimentFinal.Views.Components
             InitializeComponent();
         }
 
+        // ברגע שהרכיב מתווסף למסך, נבדוק את הרשאות המשתמש הנוכחי
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+
+            var currentUser = (App.Current as App)?.CurrentUser;
+            if (currentUser != null)
+            {
+                // הטאב יופיע אך ורק אם המשתמש הוא אדמין מורשה ב-Firebase
+                AdminTab.IsVisible = currentUser.IsAdmin;
+            }
+            else
+            {
+                AdminTab.IsVisible = false;
+            }
+        }
+
         private async void OnHomeClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("//MainPage");
@@ -36,6 +53,12 @@ namespace MarketSentimentFinal.Views.Components
         private async void OnAccountClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("//UserDetailsPage");
+        }
+
+        private async void OnAdminClicked(object sender, EventArgs e)
+        {
+            // מעבר חלק לעמוד ניהול המערכת של האדמינים
+            await Shell.Current.GoToAsync("//AdminPage");
         }
 
         private async void OnWhaleTrackerClicked(object sender, EventArgs e)
@@ -54,12 +77,10 @@ namespace MarketSentimentFinal.Views.Components
         {
             try
             {
-                // ניסיון לנווט לדף (ברגע שתבנה אותו, זה פשוט יעבוד)
                 await Shell.Current.GoToAsync("ChatAssistantPage");
             }
             catch
             {
-                // אם הדף עדיין לא קיים, המשתמש יקבל את ההתראה
                 await Shell.Current.DisplayAlert("Coming Soon", "AI Chat Assistant page is not created yet.", "OK");
             }
         }

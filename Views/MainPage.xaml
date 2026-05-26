@@ -68,6 +68,7 @@
                 <Label
                     FontAttributes="Bold"
                     FontSize="45"
+                    HorizontalOptions="Center"
                     Text="{Binding MoodScore}"
                     TextColor="#00E676" />
                 <Label

@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using MarketSentimentFinal.Models;
 using MarketSentimentFinal.Services;
 using MarketSentimentFinal.Services.DBService;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 
 namespace MarketSentimentFinal.ViewModels
 {
@@ -33,7 +36,7 @@ namespace MarketSentimentFinal.ViewModels
         {
             _dbService = dbService;
 
-            // נתוני התחלה ריקים (כי ביקשת לנקות)
+            // נתוני התחלה ריקים
             FirstName = string.Empty;
             LastName = string.Empty;
             Email = string.Empty;
@@ -68,8 +71,21 @@ namespace MarketSentimentFinal.ViewModels
                 }
 
                 IsBusy = false;
-                await Shell.Current.DisplayAlert("Success", $"Welcome {FirstName}!", "OK");
-                await Shell.Current.GoToAsync("//MainPage");
+
+                // הודעת הצלחה למשתמש
+                await Application.Current.MainPage.DisplayAlert("Success", $"Welcome {FirstName}!", "OK");
+
+                // תוקן: החלפת ה-Root של האפליקציה ל-AppShell בצורה בטוחה ב-Main Thread
+                // זה מונע את ה-NullReferenceException מאחר וה-Shell עוד לא קיים בשלב זה
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    var shell = IPlatformApplication.Current?.Services.GetService<AppShell>();
+
+                    if (shell != null)
+                    {
+                        Application.Current.MainPage = shell;
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -82,8 +98,12 @@ namespace MarketSentimentFinal.ViewModels
         [RelayCommand]
         private async Task BackToLogin()
         {
-            // ניווט חזרה ללוגין בצורה מפורשת כדי למנוע תקיעה
-            await Shell.Current.GoToAsync("//LoginPage");
+            // מאחר ונכנסנו באמצעות Navigation.PushAsync, אנחנו יוצאים בצורה בטוחה עם PopAsync
+            // זה עוקף את ה-Shell שעדיין לא קיים בשלב זה, ומונע לחלוטין את הקריסה!
+            if (Application.Current?.MainPage?.Navigation != null)
+            {
+                await Application.Current.MainPage.Navigation.PopAsync();
+            }
         }
 
         private bool Validate()
