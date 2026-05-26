@@ -7,6 +7,9 @@ namespace MarketSentimentFinal.Services
     {
         private readonly HttpClient _httpClient;
 
+        // שים כאן את ה-Token שלך מחדש
+        private readonly string _apiKey = "gkopxmnvmemwzjwkj2ldyqqzarvxbqfukdaartjm";
+
         public CryptoNewsService()
         {
             _httpClient = new HttpClient();
@@ -18,10 +21,9 @@ namespace MarketSentimentFinal.Services
             var articles = new List<NewsArticle>();
             try
             {
-                // Using a 100% open, public rss-to-json converter feed for CoinTelegraph live breaking news
-                string url = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fcointelegraph.com%2Frss";
+                string url = $"https://cryptonews-api.com/api/v1/category?section=alltickers&items=20&token={_apiKey}";
 
-                System.Diagnostics.Debug.WriteLine($"[NEWS API] Switching feed source to: {url}");
+                System.Diagnostics.Debug.WriteLine($"[NEWS API] Fetching premium news from: {url}");
                 var response = await _httpClient.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -29,28 +31,42 @@ namespace MarketSentimentFinal.Services
                     var jsonString = await response.Content.ReadAsStringAsync();
                     using var document = JsonDocument.Parse(jsonString);
 
-                    // The open RSS API returns a root object with an "items" array inside
-                    if (document.RootElement.TryGetProperty("items", out var itemsArray))
+                    if (document.RootElement.TryGetProperty("data", out var itemsArray))
                     {
                         int count = 0;
-                        foreach (var item in itemsArray.EnumerateArray().Take(20))
+                        foreach (var item in itemsArray.EnumerateArray())
                         {
+                            string rawSentiment = item.TryGetProperty("sentiment", out var s) ? s.GetString().ToUpper() : "NEUTRAL";
+                            string sentiment = rawSentiment switch
+                            {
+                                "POSITIVE" => "BULLISH",
+                                "NEGATIVE" => "BEARISH",
+                                _ => "NEUTRAL"
+                            };
+
+                            // קריאת התאריך הגולמי והמרתו לזמן ישראל נקי
+                            string rawDate = item.TryGetProperty("date", out var p) ? p.GetString() : "Just now";
+                            string israelFormattedDate = ConvertToIsraelTime(rawDate);
+
                             var newsArticle = new NewsArticle
                             {
                                 Title = item.TryGetProperty("title", out var t) ? t.GetString() : "No Title",
-                                // Grabbing news content or description layout text
-                                Description = item.TryGetProperty("description", out var d) ? StripHtmlTags(d.GetString()) : "No Description",
-                                Source = "CoinTelegraph",
-                                ArticleUrl = item.TryGetProperty("link", out var l) ? l.GetString() : "",
-                                Sentiment = "NEUTRAL",
-                                SentimentColor = Color.FromArgb("#95A5A6"),
-                                PublishedAt = item.TryGetProperty("pubDate", out var p) ? p.GetString() : "Just now"
+                                Description = item.TryGetProperty("text", out var d) ? StripHtmlTags(d.GetString()) : "No Description",
+                                Source = item.TryGetProperty("source_name", out var src) ? src.GetString() : "Crypto News",
+                                ArticleUrl = item.TryGetProperty("url", out var l) ? l.GetString() : "",
+
+                                // השמת התאריך המומר והנקי
+                                PublishedAt = israelFormattedDate,
+
+                                Sentiment = sentiment,
+                                SentimentScore = 0.0,
+                                SentimentColor = GetSentimentColor(sentiment)
                             };
 
                             articles.Add(newsArticle);
                             count++;
                         }
-                        System.Diagnostics.Debug.WriteLine($"[NEWS API] Success! Loaded {count} breaking crypto articles.");
+                        System.Diagnostics.Debug.WriteLine($"[NEWS API] Success! Loaded {count} premium crypto articles.");
                     }
                 }
                 else
@@ -66,11 +82,54 @@ namespace MarketSentimentFinal.Services
             return articles;
         }
 
-        // Helper method to clean up any raw HTML tags inside standard RSS descriptions
+        // מתודת עזר שממירה לזמן ישראל ומעיפה את ה-Offset (-0400)
+        private string ConvertToIsraelTime(string rawDate)
+        {
+            if (DateTimeOffset.TryParse(rawDate, out var dateTimeOffset))
+            {
+                TimeZoneInfo israelZone;
+                try
+                {
+                    // תואם ל-Android / iOS / Mac
+                    israelZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Jerusalem");
+                }
+                catch
+                {
+                    try
+                    {
+                        // תואם ל-Windows (במידה ומריצים על Windows Machine בלבד)
+                        israelZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+                    }
+                    catch
+                    {
+                        // פולבק למזמן המקומי של המכשיר
+                        israelZone = TimeZoneInfo.Local;
+                    }
+                }
+
+                // המרה לזמן ישראל
+                var israelTime = TimeZoneInfo.ConvertTime(dateTimeOffset, israelZone);
+
+                // עיצוב מחדש ללא ה-Offset בסוף
+                return israelTime.ToString("ddd, dd MMM yyyy HH:mm:ss");
+            }
+
+            return rawDate;
+        }
+
+        private Color GetSentimentColor(string sentiment)
+        {
+            return sentiment switch
+            {
+                "BULLISH" => Color.FromArgb("#2ECC71"),
+                "BEARISH" => Color.FromArgb("#E74C3C"),
+                _ => Color.FromArgb("#95A5A6")
+            };
+        }
+
         private string StripHtmlTags(string input)
         {
             if (string.IsNullOrEmpty(input)) return "No Description";
-            // Simple clean to clear out image tags or paragraph tags from the feed text
             var cleanText = System.Text.RegularExpressions.Regex.Replace(input, "<.*?>", String.Empty);
             return cleanText.Length > 180 ? cleanText.Substring(0, 175) + "..." : cleanText;
         }

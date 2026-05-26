@@ -11,6 +11,7 @@
     Shell.NavBarIsVisible="False">
 
     <Grid BackgroundColor="#05070A">
+        <!--  אפקט גרדיאנט רקע עליון  -->
         <BoxView
             CornerRadius="200"
             HeightRequest="400"
@@ -27,6 +28,7 @@
             </BoxView.Background>
         </BoxView>
 
+        <!--  אפקט גרדיאנט רקע תחתון  -->
         <BoxView
             CornerRadius="200"
             HeightRequest="400"
@@ -48,6 +50,7 @@
             RowDefinitions="Auto, Auto, Auto, *, Auto"
             RowSpacing="12">
 
+            <!--  לוגו האפליקציה  -->
             <Image
                 Grid.Row="0"
                 HeightRequest="40"
@@ -62,6 +65,7 @@
                 </Image.Clip>
             </Image>
 
+            <!--  כותרת ראשית  -->
             <Label
                 Grid.Row="1"
                 FontAttributes="Bold"
@@ -70,6 +74,7 @@
                 Text="Live Crypto News"
                 TextColor="White" />
 
+            <!--  כפתור רענון חדשות  -->
             <Button
                 Grid.Row="2"
                 BackgroundColor="#1E3A8A"
@@ -80,6 +85,7 @@
                 Text="🔄 Fetch Latest News"
                 WidthRequest="200" />
 
+            <!--  רשימת הכתבות מה-API המעודכן  -->
             <CollectionView
                 Grid.Row="3"
                 Margin="0,5"
@@ -99,7 +105,9 @@
                             </Border.GestureRecognizers>
 
                             <VerticalStackLayout Spacing="8">
+                                <!--  שורת נתוני המקור, הסנטימנט והזמן  -->
                                 <HorizontalStackLayout Spacing="8">
+                                    <!--  באדג' סנטימנט צבעוני  -->
                                     <Border
                                         Padding="6,2"
                                         BackgroundColor="{Binding SentimentColor}"
@@ -111,18 +119,37 @@
                                             Text="{Binding Sentiment}"
                                             TextColor="White" />
                                     </Border>
+
+                                    <!--  מקור הכתבה  -->
                                     <Label
                                         FontSize="10"
                                         Text="{Binding Source}"
                                         TextColor="#94A3B8"
                                         VerticalOptions="Center" />
+
+                                    <!--  נקודת הפרדה ויזואלית  -->
+                                    <Label
+                                        FontSize="10"
+                                        Text="•"
+                                        TextColor="#64748B"
+                                        VerticalOptions="Center" />
+
+                                    <!--  זמן פרסום הכתבה מה-API  -->
+                                    <Label
+                                        FontSize="10"
+                                        Text="{Binding PublishedAt}"
+                                        TextColor="#64748B"
+                                        VerticalOptions="Center" />
                                 </HorizontalStackLayout>
 
+                                <!--  כותרת הכתבה  -->
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="14"
                                     Text="{Binding Title}"
                                     TextColor="White" />
+
+                                <!--  תיאור קצר של הכתבה  -->
                                 <Label
                                     FontSize="11"
                                     LineBreakMode="TailTruncation"
@@ -135,6 +162,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <!--  תפריט ניווט תחתון צף  -->
             <components:FloatingNavBar
                 Grid.Row="4"
                 Margin="0,0,0,10"
