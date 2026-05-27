@@ -74,7 +74,6 @@ namespace MarketSentimentFinal.ViewModels
             if (user == null) return;
             var param = new Dictionary<string, object> { { "selectedUser", user } };
 
-            // שימוש בנתיב ניווט מלא ומפורש ב-Shell כדי למנוע קריסות של Stack ריק
             await Shell.Current.GoToAsync("//UserDetailsPage", param);
         }
     }

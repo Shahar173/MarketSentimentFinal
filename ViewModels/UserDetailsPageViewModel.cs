@@ -130,7 +130,6 @@ namespace MarketSentimentFinal.ViewModels
                 var loginPage = IPlatformApplication.Current?.Services.GetService<Views.LoginPage>();
                 if (loginPage != null)
                 {
-                    // אנחנו שמים את ה-LoginPage בתוך NavigationPage כדי שיוכל לעבור בהמשך ל-SignUp
                     Application.Current.MainPage = new NavigationPage(loginPage);
                 }
             });

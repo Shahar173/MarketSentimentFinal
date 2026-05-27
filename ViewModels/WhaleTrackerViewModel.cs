@@ -185,7 +185,6 @@ namespace MarketSentimentFinal.ViewModels
                 return israelTime.ToString("yyyy-MM-dd HH:mm:ss");
             }
 
-            // אם לא הצליח לפרסר, מחזיר מה שיש (לפחות לא יקרוס)
             return rawDate;
         }
 
@@ -249,7 +248,6 @@ namespace MarketSentimentFinal.ViewModels
             SharedScore = SentimentScore;
         }
 
-        // ב-WhaleTrackerViewModel.cs
         public async Task InitializeAsync()
         {
             if (_hasLoaded) return; // מונע טעינה כפולה
