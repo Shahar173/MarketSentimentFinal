@@ -1,12 +1,25 @@
 using MarketSentimentFinal.ViewModels;
 
-namespace MarketSentimentFinal.Views;
-
-public partial class UsersListPage : ContentPage
+namespace MarketSentimentFinal.Views
 {
-    public UsersListPage(UsersListViewModel vm)
+    public partial class UsersListPage : ContentPage
     {
-        InitializeComponent();
-        BindingContext = vm;
+        public UsersListPage(UsersListViewModel viewModel)
+        {
+            InitializeComponent();
+            BindingContext = viewModel;
+        }
+
+        // מתודה שמופעלת אוטומטית בכל פעם שהמסך עולה או חוזרים אליו
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // גישה ל-ViewModel וביצוע טעינה מחודשת וטרייה מה-Database
+            if (BindingContext is UsersListViewModel viewModel)
+            {
+                await viewModel.LoadAllUsers();
+            }
+        }
     }
 }

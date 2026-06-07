@@ -26,14 +26,12 @@ namespace MarketSentimentFinal.ViewModels
 
         public ICommand UpdateCommand { get; }
         public ICommand DeleteCommand { get; }
-        public ICommand LogoutCommand { get; } // פקודה חדשה עבור התנתקות
 
         public UserDetailsPageViewModel(IAppUserRepository userRepo)
         {
             _userRepo = userRepo;
             UpdateCommand = new Command(async () => await OnUpdate());
             DeleteCommand = new Command(async () => await OnDelete());
-            LogoutCommand = new Command(async () => await OnLogout()); // קישור הפקודה
 
             LoadCurrentUser();
         }
@@ -104,35 +102,12 @@ namespace MarketSentimentFinal.ViewModels
             {
                 await _userRepo.DeleteAsync(_selectedUser);
                 await Shell.Current.DisplayAlert("Deleted", "User has been removed.", "OK");
-                await Shell.Current.GoToAsync("//MainPage");
+                await Shell.Current.GoToAsync("//UsersListPage");
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error", "Could not delete user. Try again.", "OK");
             }
-        }
-
-        private async Task OnLogout()
-        {
-            // בקשת אישור יציאה מהמשתמש
-            bool confirmed = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
-            if (!confirmed) return;
-
-            // 1. ניקוי אובייקט המשתמש השמור בזיכרון האפליקציה
-            if (App.Current is App mainApp)
-            {
-                mainApp.CurrentUser = null;
-            }
-
-            // 2. החזרת דף הבית למסך ה-LoginPage המקורי (שבירת ה-Shell הנוכחי למען בטיחות)
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                var loginPage = IPlatformApplication.Current?.Services.GetService<Views.LoginPage>();
-                if (loginPage != null)
-                {
-                    Application.Current.MainPage = new NavigationPage(loginPage);
-                }
-            });
         }
     }
 }

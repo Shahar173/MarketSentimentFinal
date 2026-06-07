@@ -47,19 +47,40 @@
             RowDefinitions="Auto, Auto, Auto, Auto, Auto, *"
             RowSpacing="12">
 
-            <Image
+            <!--  חלק עליון: לוגו במרכז וכפתור התנתקות בצד ימין  -->
+            <Grid
                 Grid.Row="0"
                 HeightRequest="40"
-                HorizontalOptions="Center"
-                Source="market_mood_logo.png"
-                WidthRequest="40">
-                <Image.Clip>
-                    <EllipseGeometry
-                        Center="20,20"
-                        RadiusX="20"
-                        RadiusY="20" />
-                </Image.Clip>
-            </Image>
+                VerticalOptions="Center">
+                <Image
+                    HeightRequest="40"
+                    HorizontalOptions="Center"
+                    Source="market_mood_logo.png"
+                    WidthRequest="40">
+                    <Image.Clip>
+                        <EllipseGeometry
+                            Center="20,20"
+                            RadiusX="20"
+                            RadiusY="20" />
+                    </Image.Clip>
+                </Image>
+
+                <!--  כפתור התנתקות מעוצב בפינה הימנית  -->
+                <Button
+                    Padding="12,0"
+                    BackgroundColor="Transparent"
+                    BorderColor="#33EF4444"
+                    BorderWidth="1"
+                    Command="{Binding LogoutCommand}"
+                    CornerRadius="8"
+                    FontAttributes="Bold"
+                    FontSize="11"
+                    HeightRequest="32"
+                    HorizontalOptions="End"
+                    Text="Logout"
+                    TextColor="#EF4444"
+                    VerticalOptions="Center" />
+            </Grid>
 
             <VerticalStackLayout
                 Grid.Row="1"

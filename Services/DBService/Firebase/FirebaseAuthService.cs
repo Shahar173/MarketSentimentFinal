@@ -138,7 +138,17 @@ namespace MarketSentimentFinal.Services
 
         public async Task SignOut()
         {
-            throw new NotImplementedException();
+            try
+            {
+                // ניתוק רשמי של הקליינט מול שרתי פיירבייס
+                _authClient?.SignOut();
+                _logger.LogDebug("User signed out from Firebase successfully");
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug($"SignOut failed: {ex.Message}");
+            }
         }
     }
 }

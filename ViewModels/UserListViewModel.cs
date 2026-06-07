@@ -39,12 +39,22 @@ namespace MarketSentimentFinal.ViewModels
 
         public async Task LoadAllUsers()
         {
+            // משיכת הנתונים העדכניים ביותר מה-Repository בענן
             var usersFromDb = await _userRepo.GetAllAsync();
 
             if (usersFromDb != null)
             {
                 _allUsersList = usersFromDb;
-                UpdateCollection(_allUsersList);
+
+                // אם המשתמש מוחק בזמן שיש טקסט בחיפוש, נפעיל את הסינון מחדש, אחרת נציג הכל
+                if (!string.IsNullOrWhiteSpace(SearchText))
+                {
+                    OnSearch();
+                }
+                else
+                {
+                    UpdateCollection(_allUsersList);
+                }
             }
         }
 

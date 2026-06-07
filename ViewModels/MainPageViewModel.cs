@@ -1,4 +1,9 @@
-﻿using System;
+﻿using MarketSentimentFinal.Services; // חובה כדי להכיר את IAuthService
+using MarketSentimentFinal.Services.DBService;
+using MarketSentimentFinal.ViewModels.News;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Http;
@@ -7,15 +12,13 @@ using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
-using MarketSentimentFinal.ViewModels.News; // חובה כדי להכיר את ViewNewsViewModel
 
 namespace MarketSentimentFinal.ViewModels
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
         private readonly HttpClient _httpClient = new();
+        private readonly IAuthService _authService; // שירות האימות של Firebase
         public event PropertyChangedEventHandler PropertyChanged;
 
         // Navigation Commands
@@ -29,7 +32,7 @@ namespace MarketSentimentFinal.ViewModels
         public ICommand ChatComingSoonCommand { get; }
 
         // Dashboard Data
-        private string _moodScore = "50"; // ברירת מחדל ניטרלית
+        private string _moodScore = "50";
         public string MoodScore
         {
             get => _moodScore;
@@ -66,8 +69,11 @@ namespace MarketSentimentFinal.ViewModels
         private Color _fearGreedColor = Colors.White;
         public Color FearGreedColor { get => _fearGreedColor; set { _fearGreedColor = value; OnPropertyChanged(); } }
 
-        public MainPageViewModel()
+        // הקונסטרקטור המעודכן שמקבל את ה-AuthService בהזרקת תלויות
+        public MainPageViewModel(IAuthService authService)
         {
+            _authService = authService;
+
             GoToHomeCommand = new Command(async () => await Shell.Current.GoToAsync("//MainPage"));
             GoToNewsCommand = new Command(async () => await Shell.Current.GoToAsync("ViewNewsPage"));
             GoToFearAndGreedCommand = new Command(async () => await Shell.Current.GoToAsync("FearAndGreedPage"));
@@ -78,27 +84,21 @@ namespace MarketSentimentFinal.ViewModels
             ChatComingSoonCommand = new Command(async () =>
                 await Shell.Current.DisplayAlert("AI Analyst", "Coming soon! We're working on it.", "OK"));
 
-            // טעינה ראשונית של כל הנתונים הסטטיים מהזיכרון
             LoadDashboardData();
             _ = LoadFearAndGreedDataAsync();
         }
 
-        // מתודה משולבת: מושכת חדשות לחלק העליון ולווייתנים לחלק התחתון
         public void LoadDashboardData()
         {
-            // 1. קבלת ציון החדשות (Fundamental Sentiment) לחלק העליון של המסך
             int newsScore = ViewNewsViewModel.SharedNewsScore;
             MoodScore = newsScore.ToString();
 
-            // עדכון המלל הראשי לפי ציון סנטימנט החדשות
             if (newsScore >= 65) MoodStatusText = "BULLISH OPTIMISM";
             else if (newsScore >= 45) MoodStatusText = "NEUTRAL SENTIMENT";
             else MoodStatusText = "BEARISH FEAR";
 
-            // עדכון מיקום המחוג על פי הציון של החדשות
             UpdateKnobPosition();
 
-            // 2. קבלת אחוזי הלווייתנים (On-Chain Data) לחלק התחתון של המסך
             WhaleBuyPercent = WhaleTrackerViewModel.SharedBuyPercent;
             WhaleSellPercent = WhaleTrackerViewModel.SharedSellPercent;
         }
@@ -107,13 +107,8 @@ namespace MarketSentimentFinal.ViewModels
         {
             if (double.TryParse(MoodScore, out double score))
             {
-                // 1. נגדיר את אורך הקו הריאלי שרואים במסך (בערך 295 פיקסלים)
                 double totalWidth = 295;
-
-                // 2. נוריד את קוטר העיגול (12 פיקסלים) כדי שכשהציון הוא 100 העיגול יעצר בדיוק בקצה הקו ולא יחרוג ממנו
                 double maxTranslation = totalWidth - 12;
-
-                // 3. נחשב את המיקום וננעל אותו בין 0 למקסימום החדש
                 IndicatorPosition = Math.Clamp((score / 100.0) * maxTranslation, 0, maxTranslation);
             }
         }
@@ -149,8 +144,28 @@ namespace MarketSentimentFinal.ViewModels
 
         private async void OnLogout()
         {
-            bool answer = await Shell.Current.DisplayAlert("Logout", "Are you sure?", "Yes", "No");
-            if (answer) await Shell.Current.GoToAsync("//LoginPage");
+            bool answer = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    // 1. התנתקות רשמית משרתי Firebase כדי לנקות את ה-Token מהרקע
+                    await _authService.SignOut(); 
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[LOGOUT ERROR] Firebase signout failed: {ex.Message}");
+                }
+
+                // 2. ניקוי אובייקט המשתמש השמור בזיכרון המקומי
+                if (App.Current is App mainApp)
+                {
+                    mainApp.CurrentUser = null;
+                }
+
+                // 3. הפניה נקייה חזרה לעמוד ה-Login
+                await Shell.Current.GoToAsync("//LoginPage");
+            }
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

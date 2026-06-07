@@ -153,18 +153,6 @@
                         TextColor="White" />
 
                     <Button
-                        Margin="0,5,0,5"
-                        BackgroundColor="Transparent"
-                        BorderColor="#64748B"
-                        BorderWidth="1"
-                        Command="{Binding LogoutCommand}"
-                        CornerRadius="10"
-                        FontAttributes="Bold"
-                        HeightRequest="48"
-                        Text="Logout From Account"
-                        TextColor="White" />
-
-                    <Button
                         Margin="0,5,0,80"
                         BackgroundColor="Transparent"
                         BorderColor="#EF4444"

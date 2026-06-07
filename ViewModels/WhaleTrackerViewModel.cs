@@ -89,7 +89,12 @@ namespace MarketSentimentFinal.ViewModels
             GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
             RefreshCommand = new Command(async () => await LoadWhaleDataAsync());
 
-            _ = LoadWhaleDataAsync();
+            // נותנים ל-UI חצי שנייה להתחבר ל-BindingContext ורק אז מפעילים את הטעינה
+            Task.Run(async () =>
+            {
+                await Task.Delay(200); // השהייה קלה שמבטיחה שהמסך מוכן ומקשיב לשינויים
+                MainThread.BeginInvokeOnMainThread(async () => await LoadWhaleDataAsync());
+            });
         }
 
         private async Task LoadWhaleDataAsync()
@@ -101,7 +106,6 @@ namespace MarketSentimentFinal.ViewModels
             {
                 string apiUrl = "https://cryptonews-api.com/api/v1/whale-transactions?tickers=BTC,ETH&date=last24hours&token=2ke2ezrpzznixlsh44l96dl5ivrxcfl31lhubxwd";
 
-                // שימוש ב-NoCache כדי למנוע נתונים תקועים מהזיכרון
                 var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
                 request.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
 
@@ -122,29 +126,35 @@ namespace MarketSentimentFinal.ViewModels
 
                         foreach (var item in dataArray.EnumerateArray())
                         {
-                            // המרת הסכום בבטחה - תומך גם בטקסט וגם במספר
-                            double amount = 0;
-                            if (item.TryGetProperty("amount_usd", out var a))
+                            // הגנה פנימית: אם אובייקט ספציפי פגום ב-API, נדלג עליו במקום לקרוס
+                            try
                             {
-                                amount = a.ValueKind == JsonValueKind.Number ? a.GetDouble() : double.Parse(a.GetString() ?? "0");
+                                double amount = 0;
+                                if (item.TryGetProperty("amount_usd", out var a))
+                                {
+                                    amount = a.ValueKind == JsonValueKind.Number ? a.GetDouble() : double.Parse(a.GetString() ?? "0");
+                                }
+
+                                string direction = item.TryGetProperty("direction", out var d) ? d.GetString()?.ToLower() : "unknown";
+
+                                if (direction == "exchange_outflow") { buyVol += amount; buyCount++; }
+                                else if (direction == "exchange_inflow") { sellVol += amount; sellCount++; }
+
+                                newList.Add(new WhaleTransaction
+                                {
+                                    AmountUSD = amount,
+                                    Coin = item.TryGetProperty("ticker", out var tk) ? tk.GetString() : "BTC",
+                                    FromAddress = item.TryGetProperty("from_address", out var fr) ? fr.GetString() : "Unknown",
+                                    ToAddress = item.TryGetProperty("to_address", out var to) ? to.GetString() : "Unknown",
+                                    TimeAgo = item.TryGetProperty("date", out var dt) ? ConvertToIsraelTime(dt.GetString()) : "Recent",
+                                    AmountText = amount >= 1000000 ? $"${(amount / 1000000):F1}M" : $"${(amount / 1000):F0}K",
+                                    TransactionType = direction
+                                });
                             }
-
-                            string direction = item.TryGetProperty("direction", out var d) ? d.GetString()?.ToLower() : "unknown";
-
-                            // סיווג מדויק
-                            if (direction == "exchange_outflow") { buyVol += amount; buyCount++; }
-                            else if (direction == "exchange_inflow") { sellVol += amount; sellCount++; }
-
-                            newList.Add(new WhaleTransaction
+                            catch (Exception itemEx)
                             {
-                                AmountUSD = amount,
-                                Coin = item.TryGetProperty("ticker", out var tk) ? tk.GetString() : "BTC",
-                                FromAddress = item.TryGetProperty("from_address", out var fr) ? fr.GetString() : "Unknown",
-                                ToAddress = item.TryGetProperty("to_address", out var to) ? to.GetString() : "Unknown",
-                                TimeAgo = item.TryGetProperty("date", out var dt) ? ConvertToIsraelTime(dt.GetString()) : "Recent",
-                                AmountText = amount >= 1000000 ? $"${(amount / 1000000):F1}M" : $"${(amount / 1000):F0}K",
-                                TransactionType = direction
-                            });
+                                System.Diagnostics.Debug.WriteLine($"[WHALE API] Skipped corrupted item: {itemEx.Message}");
+                            }
                         }
 
                         // עדכון ה-UI בצורה בטוחה
@@ -155,7 +165,6 @@ namespace MarketSentimentFinal.ViewModels
                             this.BuyTxnsCount = buyCount;
                             this.SellTxnsCount = sellCount;
 
-                            // עדכון ה-ObservableCollection בצורה נקייה
                             this.Transactions.Clear();
                             foreach (var tx in newList) this.Transactions.Add(tx);
 
@@ -164,10 +173,21 @@ namespace MarketSentimentFinal.ViewModels
                         System.Diagnostics.Debug.WriteLine($"[WHALE API] Updated: {buyCount + sellCount} txns found.");
                     }
                 }
+                else
+                {
+                    // טיפול במצב שבו השרת מחזיר קוד שגיאה (למשל 500 או 401)
+                    throw new Exception($"Server responded with status code: {response.StatusCode}");
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[WHALE API] Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[WHALE API] Critical Error: {ex.Message}");
+
+                // הצגת הודעת שגיאה פופ-אפ קופצת למשתמש במקום קריסה שקטה
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Shell.Current.DisplayAlert("שגיאה בטעינה", "לא הצלחנו למשוך את נתוני הלווייתנים מהשרת. אנא נסה שוב מאוחר יותר.", "הבנתי");
+                });
             }
             finally
             {

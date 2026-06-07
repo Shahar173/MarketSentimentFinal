@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using MarketSentimentFinal.Models;
 using MarketSentimentFinal.Services;
 using MarketSentimentFinal.Views;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 
 namespace MarketSentimentFinal.ViewModels
 {
@@ -51,15 +54,22 @@ namespace MarketSentimentFinal.ViewModels
 
                     IsBusy = false;
 
-                    // 3. החלפת ה-Root של האפליקציה ל-AppShell
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    // 3. תיקון הניווט: בדיקה האם אנחנו כבר בתוך ה-Shell (מצב של אחרי Logout)
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        // שליפת ה-AppShell מה-Services (כך הוא מקבל את ה-ViewModel שלו אוטומטית)
-                        var shell = IPlatformApplication.Current?.Services.GetService<AppShell>();
-
-                        if (shell != null)
+                        if (Shell.Current != null)
                         {
-                            Application.Current.MainPage = shell;
+                            // אם ה-Shell כבר קיים ופעיל, פשוט ננווט פנימה למסך הבית
+                            await Shell.Current.GoToAsync("//MainPage");
+                        }
+                        else
+                        {
+                            // אם זו הרצה ראשונית של האפליקציה, נבצע החלפת מנוע ל-AppShell
+                            var shell = IPlatformApplication.Current?.Services.GetService<AppShell>();
+                            if (shell != null)
+                            {
+                                Application.Current.MainPage = shell;
+                            }
                         }
                     });
                 }

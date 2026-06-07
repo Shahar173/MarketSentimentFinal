@@ -337,5 +337,31 @@
                 ActivePage="Whales"
                 VerticalOptions="End" />
         </Grid>
+
+        <Grid
+            BackgroundColor="#E605070A"
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Fill"
+            ZIndex="99">
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                Spacing="15"
+                VerticalOptions="Center">
+                <ActivityIndicator
+                    HeightRequest="50"
+                    IsRunning="{Binding IsLoading}"
+                    WidthRequest="50"
+                    Color="#1E3A8A" />
+                <Label
+                    CharacterSpacing="1"
+                    FontAttributes="Bold"
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    Text="טוען נתוני לווייתנים..."
+                    TextColor="#94A3B8" />
+            </VerticalStackLayout>
+        </Grid>
+
     </Grid>
 </ContentPage>
