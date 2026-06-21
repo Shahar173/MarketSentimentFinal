@@ -52,8 +52,7 @@ namespace MarketSentimentFinal.Services
                                 Title = item.TryGetProperty("title", out var t) ? t.GetString() : "No Title",
                                 Description = item.TryGetProperty("text", out var d) ? StripHtmlTags(d.GetString()) : "No Description",
                                 Source = item.TryGetProperty("source_name", out var src) ? src.GetString() : "Crypto News",
-                                ArticleUrl = item.TryGetProperty("url", out var l) ? l.GetString() : "",
-
+                                ArticleUrl = item.TryGetProperty("news_url", out var l) ? l.GetString() : "",
                                 PublishedAt = israelFormattedDate,
 
                                 Sentiment = sentiment,
